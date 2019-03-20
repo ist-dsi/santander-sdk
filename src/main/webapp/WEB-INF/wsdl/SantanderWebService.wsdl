@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="RegistersInfo"
+	targetNamespace="http://portal.sibscartoes.pt/wcf" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsa10="http://www.w3.org/2005/08/addressing"
+	xmlns:tns="http://portal.sibscartoes.pt/wcf" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy"
+	xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract"
+	xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:i0="http://tempuri.org/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+	<wsdl:import namespace="http://tempuri.org/"
+		location="SantanderWebServicePolicy.wsdl" />
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://portal.sibscartoes.pt/wcf/Imports">
+			<xsd:import
+				schemaLocation="santander-type-0.xml"
+				namespace="http://portal.sibscartoes.pt/wcf" />
+			<xsd:import
+				schemaLocation="santander-type-1.xml"
+				namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+			<xsd:import
+				schemaLocation="santander-type-2.xml"
+				namespace="http://schemas.datacontract.org/2004/07/PortalSantander_Wcf" />
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="IRegistersInfo_Test_InputMessage">
+		<wsdl:part name="parameters" element="tns:Test" />
+	</wsdl:message>
+	<wsdl:message name="IRegistersInfo_Test_OutputMessage">
+		<wsdl:part name="parameters" element="tns:TestResponse" />
+	</wsdl:message>
+	<wsdl:message name="IRegistersInfo_GetRegister_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetRegister" />
+	</wsdl:message>
+	<wsdl:message name="IRegistersInfo_GetRegister_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetRegisterResponse" />
+	</wsdl:message>
+	<wsdl:message name="IRegistersInfo_GetFormStatus_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetFormStatus" />
+	</wsdl:message>
+	<wsdl:message name="IRegistersInfo_GetFormStatus_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetFormStatusResponse" />
+	</wsdl:message>
+	<wsdl:portType name="IRegistersInfo">
+		<wsdl:operation name="Test">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegistersInfo/Test"
+				message="tns:IRegistersInfo_Test_InputMessage" />
+			<wsdl:output
+				wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegistersInfo/TestResponse"
+				message="tns:IRegistersInfo_Test_OutputMessage" />
+		</wsdl:operation>
+		<wsdl:operation name="GetRegister">
+			<wsdl:input
+				wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegistersInfo/GetRegister"
+				message="tns:IRegistersInfo_GetRegister_InputMessage" />
+			<wsdl:output
+				wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegistersInfo/GetRegisterResponse"
+				message="tns:IRegistersInfo_GetRegister_OutputMessage" />
+		</wsdl:operation>
+		<wsdl:operation name="GetFormStatus">
+			<wsdl:input
+				wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegistersInfo/GetFormStatus"
+				message="tns:IRegistersInfo_GetFormStatus_InputMessage" />
+			<wsdl:output
+				wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegistersInfo/GetFormStatusResponse"
+				message="tns:IRegistersInfo_GetFormStatus_OutputMessage" />
+		</wsdl:operation>
+	</wsdl:portType>
+		<wsdl:binding name="RegistersInfo_WsHttp" type="tns:IRegistersInfo">
+		<wsp:PolicyReference URI="#RegistersInfo_WsHttp_policy" />
+		<soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="Test">
+			<soap12:operation
+				soapAction="http://portal.sibscartoes.pt/wcf/IRegistersInfo/Test"
+				style="document" />
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetRegister">
+			<soap12:operation
+				soapAction="http://portal.sibscartoes.pt/wcf/IRegistersInfo/GetRegister"
+				style="document" />
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetFormStatus">
+			<soap12:operation
+				soapAction="http://portal.sibscartoes.pt/wcf/IRegistersInfo/GetFormStatus"
+				style="document" />
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="RegistersInfo">
+		<wsdl:port name="RegistersInfo_WsHttp" binding="tns:RegistersInfo_WsHttp">
+			<soap12:address
+				location="https://portal.sibscartoes.pt/tstwcf/RegistersInfo.svc" />
+			<wsa10:EndpointReference>
+				<wsa10:Address>https://portal.sibscartoes.pt/tstwcf/RegistersInfo.svc
+				</wsa10:Address>
+			</wsa10:EndpointReference>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

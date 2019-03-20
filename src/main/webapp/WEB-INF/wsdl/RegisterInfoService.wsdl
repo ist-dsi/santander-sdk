@@ -1,0 +1,983 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="RegisterInfoService" targetNamespace="http://portal.sibscartoes.pt/wcf" 
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" 
+	xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" 
+	xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" 
+	xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" 
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+	xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+	xmlns:tns="http://portal.sibscartoes.pt/wcf" 
+	xmlns:wsa10="http://www.w3.org/2005/08/addressing" 
+	xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" 
+	xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+	<wsp:Policy wsu:Id="RegisterInfo_WsHttp_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<http:BasicAuthentication xmlns:http="http://schemas.microsoft.com/ws/06/2004/policy/http"/>
+				<sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:TransportToken>
+							<wsp:Policy>
+								<sp:HttpsToken RequireClientCertificate="false"/>
+							</wsp:Policy>
+						</sp:TransportToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic256/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+					</wsp:Policy>
+				</sp:TransportBinding>
+				<wsaw:UsingAddressing/>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsdl:types>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://portal.sibscartoes.pt/wcf" 
+			xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:import namespace="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+			<xs:element name="Test">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="value" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TestResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="TestResult" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Version">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="VersionResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="VersionResult" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetRegister">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="identificationNumber" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetRegisterResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="GetRegisterResult" nillable="true" type="q1:RegisterData" 
+							xmlns:q1="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetRegisterStatus">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="identificationNumber" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetRegisterStatusResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="GetRegisterStatusResult" nillable="true" type="q2:RegisterStatusData" 
+							xmlns:q2="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PrintProgramAuth">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="username" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="password" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PrintProgramAuthResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="PrintProgramAuthResult" nillable="true" type="q3:CardPrintAuthResponse" 
+							xmlns:q3="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetCardAndTemplateData">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="entityCode" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="identificationNumber" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="username" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetCardAndTemplateDataResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="GetCardAndTemplateDataResult" nillable="true" type="q4:CardPrintTemplateResponse" 
+							xmlns:q4="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetCardImage">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="request" nillable="true" type="q5:CardPrintImageRequest" 
+							xmlns:q5="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+						<xs:element minOccurs="0" name="username" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetCardImageResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="GetCardImageResult" nillable="true" type="q6:CardPrintImageResponse" 
+							xmlns:q6="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetCardImageUsing">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="request" nillable="true" type="q7:CardPrintImageRequest" 
+							xmlns:q7="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+						<xs:element minOccurs="0" name="username" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetCardImageUsingResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="GetCardImageUsingResult" nillable="true" type="q8:CardPrintImageResponse" 
+							xmlns:q8="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SaveMifareSerialNumber">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="entityCode" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="identificationNumber" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="serialNumber" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="username" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SaveMifareSerialNumberResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="SaveMifareSerialNumberResult" nillable="true" type="q9:ReadableResult" 
+							xmlns:q9="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CardPrintUpdateStatus">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="entityCode" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="identificationNumber" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="cardStatusName" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="username" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CardPrintUpdateStatusResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="CardPrintUpdateStatusResult" nillable="true" type="q10:ReadableResult" 
+							xmlns:q10="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+		<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/" 
+			xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+			xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/">
+			<xs:element name="anyType" nillable="true" type="xs:anyType"/>
+			<xs:element name="anyURI" nillable="true" type="xs:anyURI"/>
+			<xs:element name="base64Binary" nillable="true" type="xs:base64Binary"/>
+			<xs:element name="boolean" nillable="true" type="xs:boolean"/>
+			<xs:element name="byte" nillable="true" type="xs:byte"/>
+			<xs:element name="dateTime" nillable="true" type="xs:dateTime"/>
+			<xs:element name="decimal" nillable="true" type="xs:decimal"/>
+			<xs:element name="double" nillable="true" type="xs:double"/>
+			<xs:element name="float" nillable="true" type="xs:float"/>
+			<xs:element name="int" nillable="true" type="xs:int"/>
+			<xs:element name="long" nillable="true" type="xs:long"/>
+			<xs:element name="QName" nillable="true" type="xs:QName"/>
+			<xs:element name="short" nillable="true" type="xs:short"/>
+			<xs:element name="string" nillable="true" type="xs:string"/>
+			<xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte"/>
+			<xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt"/>
+			<xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong"/>
+			<xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort"/>
+			<xs:element name="char" nillable="true" type="tns:char"/>
+			<xs:simpleType name="char">
+				<xs:restriction base="xs:int"/>
+			</xs:simpleType>
+			<xs:element name="duration" nillable="true" type="tns:duration"/>
+			<xs:simpleType name="duration">
+				<xs:restriction base="xs:duration">
+					<xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?"/>
+					<xs:minInclusive value="-P10675199DT2H48M5.4775808S"/>
+					<xs:maxInclusive value="P10675199DT2H48M5.4775807S"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:element name="guid" nillable="true" type="tns:guid"/>
+			<xs:simpleType name="guid">
+				<xs:restriction base="xs:string">
+					<xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:attribute name="FactoryType" type="xs:QName"/>
+			<xs:attribute name="Id" type="xs:ID"/>
+			<xs:attribute name="Ref" type="xs:IDREF"/>
+		</xs:schema>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts" 
+			xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+			xmlns:tns="http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts">
+			<xs:import namespace="http://schemas.datacontract.org/2004/07/SibsCards.ReadableResult"/>
+			<xs:import namespace="http://schemas.datacontract.org/2004/07/SibsCards.BusinessObjects"/>
+			<xs:complexType name="RegisterData">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="Address" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="BankAccountNumber" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="BankClientNumber" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="CardType" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Email" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="EntityCode" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="EntityName" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="ExpeditionDate" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="ExpeditionTypeCode" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="ExpeditionTypeName" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="ExpiryDate" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="FirstName" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="FullName" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="IdentificationNumber" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="IdentificationTypeCode" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="IdentificationTypeName" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="MifareNumber" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="NameOnCard" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Nib" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Nif" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="OtherNames" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="PhoneNumber" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Produced" type="xs:boolean"/>
+					<xs:element minOccurs="0" name="Reissued" nillable="true" type="xs:boolean"/>
+					<xs:element minOccurs="0" name="Renewed" nillable="true" type="xs:boolean"/>
+					<xs:element minOccurs="0" name="SerialNumber" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Status" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="StatusCode" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="StatusDate" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="StatusDescription" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Surname" nillable="true" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="RegisterData" nillable="true" type="tns:RegisterData"/>
+			<xs:complexType name="RegisterStatusData">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="EntityCode" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="EntityName" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="IdentificationNumber" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Status" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="StatusDate" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="StatusDescription" nillable="true" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="RegisterStatusData" nillable="true" type="tns:RegisterStatusData"/>
+			<xs:complexType name="CardPrintAuthResponse">
+				<xs:complexContent mixed="false">
+					<xs:extension base="tns:ReadableResult">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="IsAdministratorWithoutEntity" type="xs:boolean"/>
+							<xs:element minOccurs="0" name="UserEntityCode" nillable="true" type="xs:string"/>
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:element name="CardPrintAuthResponse" nillable="true" type="tns:CardPrintAuthResponse"/>
+			<xs:complexType name="ReadableResult">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="AdditionalData" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Details" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Response" nillable="true" type="tns:ReadableResponse"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="ReadableResult" nillable="true" type="tns:ReadableResult"/>
+			<xs:complexType name="ReadableResponse">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="Response" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="ResponseType" type="q1:ResponseType" 
+						xmlns:q1="http://schemas.datacontract.org/2004/07/SibsCards.ReadableResult"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="ReadableResponse" nillable="true" type="tns:ReadableResponse"/>
+			<xs:complexType name="CardPrintTemplateResponse">
+				<xs:complexContent mixed="false">
+					<xs:extension base="tns:ReadableResult">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="AvailableCardTemplates" nillable="true" type="q2:ArrayOfEntityCardTemplate" 
+								xmlns:q2="http://schemas.datacontract.org/2004/07/SibsCards.BusinessObjects"/>
+							<xs:element minOccurs="0" name="CardId" type="xs:int"/>
+							<xs:element minOccurs="0" name="CardTechnology" nillable="true" type="xs:string"/>
+							<xs:element minOccurs="0" name="ClientName" nillable="true" type="xs:string"/>
+							<xs:element minOccurs="0" name="EntityName" nillable="true" type="xs:string"/>
+							<xs:element minOccurs="0" name="LastProductionDate" nillable="true" type="xs:dateTime"/>
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:element name="CardPrintTemplateResponse" nillable="true" type="tns:CardPrintTemplateResponse"/>
+			<xs:complexType name="CardPrintImageRequest">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="CardPage" type="xs:int"/>
+					<xs:element minOccurs="0" name="EntityCode" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="EntityTemplateId" type="xs:int"/>
+					<xs:element minOccurs="0" name="IdentificationNumber" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="ImageFormat" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="RequestPage" type="xs:int"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="CardPrintImageRequest" nillable="true" type="tns:CardPrintImageRequest"/>
+			<xs:complexType name="CardPrintImageResponse">
+				<xs:complexContent mixed="false">
+					<xs:extension base="tns:ReadableResult">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="CardPage" type="xs:int"/>
+							<xs:element minOccurs="0" name="ImageData" nillable="true" type="xs:base64Binary"/>
+							<xs:element minOccurs="0" name="IsLastPage" type="xs:boolean"/>
+							<xs:element minOccurs="0" name="ResponsePage" type="xs:int"/>
+							<xs:element minOccurs="0" name="TextElements" nillable="true" type="tns:ArrayOfCardPrintTextElements"/>
+							<xs:element minOccurs="0" name="TotalNumberOfPages" type="xs:int"/>
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:element name="CardPrintImageResponse" nillable="true" type="tns:CardPrintImageResponse"/>
+			<xs:complexType name="ArrayOfCardPrintTextElements">
+				<xs:sequence>
+					<xs:element minOccurs="0" maxOccurs="unbounded" name="CardPrintTextElements" nillable="true" type="tns:CardPrintTextElements"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="ArrayOfCardPrintTextElements" nillable="true" type="tns:ArrayOfCardPrintTextElements"/>
+			<xs:complexType name="CardPrintTextElements">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="CardPage" type="xs:boolean"/>
+					<xs:element minOccurs="0" name="EntityCardTemplateItemId" type="xs:int"/>
+					<xs:element minOccurs="0" name="Font" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="FontColor" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="FontSize" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="PositionX" type="xs:int"/>
+					<xs:element minOccurs="0" name="PositionY" type="xs:int"/>
+					<xs:element minOccurs="0" name="Value" nillable="true" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="CardPrintTextElements" nillable="true" type="tns:CardPrintTextElements"/>
+		</xs:schema>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/SibsCards.ReadableResult" 
+			xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+			xmlns:tns="http://schemas.datacontract.org/2004/07/SibsCards.ReadableResult">
+			<xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+			<xs:simpleType name="ResponseType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Success"/>
+					<xs:enumeration value="FailedToConnectToServer"/>
+					<xs:enumeration value="WrongCredentials"/>
+					<xs:enumeration value="FailedToPrintCard"/>
+					<xs:enumeration value="FailedToPrintCardWithoutDialog"/>
+					<xs:enumeration value="FailedToPrintCardWithDialog"/>
+					<xs:enumeration value="PrintCanceledByUser"/>
+					<xs:enumeration value="FailedToReadMifareCard"/>
+					<xs:enumeration value="FailedToPrintOrEncode"/>
+					<xs:enumeration value="PrintOperationSuccess"/>
+					<xs:enumeration value="EncodeOperationSuccess">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">16</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="PrintAndEncodeOperationSuccess">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">17</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="OperationError">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">18</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardNotFound">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">19</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardFoundNotInstantIssuing">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">20</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="FailedToGenerateCardImagePreview">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">21</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardIsAlreadyPrinting">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">22</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardAlreadyPrinted">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">23</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="IsNotAuthenticated">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">24</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="EntityCodeNotRecognized">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">25</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="NoTemplatesAssociated">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="TemplateIsNotAssociated">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">33</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardPrintError">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">34</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="IsNotInRole">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">35</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="BackgroundFileIdNull">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">36</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="EntityCardTemplateItemsNull">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">37</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardPhotoIdNull">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">38</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardSignatureIdNull">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">39</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="ImageElementPositionNull">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">40</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="ImageElementBase64Null">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">41</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="TextElementPositionNull">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">48</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="BackgroundImageBase64Null">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">49</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="AccountIsBlocked">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">50</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="FailedLogin">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">51</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="NoResponseSet">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">65536</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="HttpCommunicationFailure">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">52</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="AuthenticationSuccess">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">53</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardSearchSuccess">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">54</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="ImagePreviewFromServerSuccess">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">55</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="ImagePreviewTextGenerationSuccess">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">56</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardSearchFailed">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">65537</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CommunicationObjectFaulted">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">57</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="PrintJobBlocked">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">64</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="PrintJobDeleted">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">65</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="PrintJobError">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">66</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="PrinterOffline">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">67</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="PrinterOutOfCards">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">68</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="PrintJobPaused">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">69</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="PrintNeedsUserIntervention">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">70</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardTechnologyNotSet">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">65538</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="EntityProductionStatusIsNotInstantIssuing">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">71</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="ModelFontDoesNotExistInComputer">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">72</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="FailedToGenerateTextCardImagePreview">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">73</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="FontTypeNotSetForElement">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">80</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="PreviewCanceledByUser">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">81</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="ImageElementIdNotSet">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">82</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CardReaderNameNotSet">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">83</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="DacgAlreadyProcessed">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">84</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="EntityProductionStatusIsNotInstantIssuingOrBatch">
+						<xs:annotation>
+							<xs:appinfo>
+								<EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">85</EnumerationValue>
+							</xs:appinfo>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:element name="ResponseType" nillable="true" type="tns:ResponseType"/>
+		</xs:schema>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/SibsCards.BusinessObjects" 
+			xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+			xmlns:tns="http://schemas.datacontract.org/2004/07/SibsCards.BusinessObjects">
+			<xs:complexType name="ArrayOfEntityCardTemplate">
+				<xs:sequence>
+					<xs:element minOccurs="0" maxOccurs="unbounded" name="EntityCardTemplate" nillable="true" type="tns:EntityCardTemplate"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="ArrayOfEntityCardTemplate" nillable="true" type="tns:ArrayOfEntityCardTemplate"/>
+			<xs:complexType name="EntityCardTemplate">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="CardTemplateDimensionsHeight" type="xs:double"/>
+					<xs:element minOccurs="0" name="CardTemplateDimensionsName" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="CardTemplateDimensionsWidth" type="xs:double"/>
+					<xs:element minOccurs="0" name="EntityId" type="xs:int"/>
+					<xs:element minOccurs="0" name="Id" type="xs:int"/>
+					<xs:element minOccurs="0" name="Name" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="TemplateId" type="xs:int"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="EntityCardTemplate" nillable="true" type="tns:EntityCardTemplate"/>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="IRegisterInfoService_Test_InputMessage">
+		<wsdl:part name="parameters" element="tns:Test"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_Test_OutputMessage">
+		<wsdl:part name="parameters" element="tns:TestResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_Version_InputMessage">
+		<wsdl:part name="parameters" element="tns:Version"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_Version_OutputMessage">
+		<wsdl:part name="parameters" element="tns:VersionResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_GetRegister_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetRegister"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_GetRegister_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetRegisterResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_GetRegisterStatus_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetRegisterStatus"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_GetRegisterStatus_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetRegisterStatusResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_PrintProgramAuth_InputMessage">
+		<wsdl:part name="parameters" element="tns:PrintProgramAuth"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_PrintProgramAuth_OutputMessage">
+		<wsdl:part name="parameters" element="tns:PrintProgramAuthResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_GetCardAndTemplateData_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetCardAndTemplateData"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_GetCardAndTemplateData_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetCardAndTemplateDataResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_GetCardImage_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetCardImage"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_GetCardImage_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetCardImageResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_GetCardImageUsing_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetCardImageUsing"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_GetCardImageUsing_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetCardImageUsingResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_SaveMifareSerialNumber_InputMessage">
+		<wsdl:part name="parameters" element="tns:SaveMifareSerialNumber"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_SaveMifareSerialNumber_OutputMessage">
+		<wsdl:part name="parameters" element="tns:SaveMifareSerialNumberResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_CardPrintUpdateStatus_InputMessage">
+		<wsdl:part name="parameters" element="tns:CardPrintUpdateStatus"/>
+	</wsdl:message>
+	<wsdl:message name="IRegisterInfoService_CardPrintUpdateStatus_OutputMessage">
+		<wsdl:part name="parameters" element="tns:CardPrintUpdateStatusResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="IRegisterInfoService">
+		<wsdl:operation name="Test">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/Test" message="tns:IRegisterInfoService_Test_InputMessage"/>
+			<wsdl:output wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/TestResponse" message="tns:IRegisterInfoService_Test_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="Version">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/Version" message="tns:IRegisterInfoService_Version_InputMessage"/>
+			<wsdl:output wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/VersionResponse" message="tns:IRegisterInfoService_Version_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetRegister">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetRegister" message="tns:IRegisterInfoService_GetRegister_InputMessage"/>
+			<wsdl:output wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetRegisterResponse" message="tns:IRegisterInfoService_GetRegister_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetRegisterStatus">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetRegisterStatus" message="tns:IRegisterInfoService_GetRegisterStatus_InputMessage"/>
+			<wsdl:output wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetRegisterStatusResponse" message="tns:IRegisterInfoService_GetRegisterStatus_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="PrintProgramAuth">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/PrintProgramAuth" message="tns:IRegisterInfoService_PrintProgramAuth_InputMessage"/>
+			<wsdl:output wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/PrintProgramAuthResponse" message="tns:IRegisterInfoService_PrintProgramAuth_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetCardAndTemplateData">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetCardAndTemplateData" message="tns:IRegisterInfoService_GetCardAndTemplateData_InputMessage"/>
+			<wsdl:output wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetCardAndTemplateDataResponse" message="tns:IRegisterInfoService_GetCardAndTemplateData_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetCardImage">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetCardImage" message="tns:IRegisterInfoService_GetCardImage_InputMessage"/>
+			<wsdl:output wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetCardImageResponse" message="tns:IRegisterInfoService_GetCardImage_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetCardImageUsing">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetCardImageUsing" message="tns:IRegisterInfoService_GetCardImageUsing_InputMessage"/>
+			<wsdl:output wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetCardImageUsingResponse" message="tns:IRegisterInfoService_GetCardImageUsing_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="SaveMifareSerialNumber">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/SaveMifareSerialNumber" message="tns:IRegisterInfoService_SaveMifareSerialNumber_InputMessage"/>
+			<wsdl:output wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/SaveMifareSerialNumberResponse" message="tns:IRegisterInfoService_SaveMifareSerialNumber_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="CardPrintUpdateStatus">
+			<wsdl:input wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/CardPrintUpdateStatus" message="tns:IRegisterInfoService_CardPrintUpdateStatus_InputMessage"/>
+			<wsdl:output wsaw:Action="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/CardPrintUpdateStatusResponse" message="tns:IRegisterInfoService_CardPrintUpdateStatus_OutputMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="RegisterInfo_WsHttp" type="tns:IRegisterInfoService">
+		<wsp:PolicyReference URI="#RegisterInfo_WsHttp_policy"/>
+		<soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="Test">
+			<soap12:operation soapAction="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/Test" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="Version">
+			<soap12:operation soapAction="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/Version" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetRegister">
+			<soap12:operation soapAction="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetRegister" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetRegisterStatus">
+			<soap12:operation soapAction="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetRegisterStatus" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="PrintProgramAuth">
+			<soap12:operation soapAction="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/PrintProgramAuth" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetCardAndTemplateData">
+			<soap12:operation soapAction="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetCardAndTemplateData" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetCardImage">
+			<soap12:operation soapAction="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetCardImage" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetCardImageUsing">
+			<soap12:operation soapAction="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/GetCardImageUsing" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="SaveMifareSerialNumber">
+			<soap12:operation soapAction="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/SaveMifareSerialNumber" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CardPrintUpdateStatus">
+			<soap12:operation soapAction="http://portal.sibscartoes.pt/wcf/IRegisterInfoService/CardPrintUpdateStatus" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="RegisterInfoService">
+		<wsdl:port name="RegisterInfo_WsHttp" binding="tns:RegisterInfo_WsHttp">
+			<soap12:address location="https://portal.sibscartoes.pt/tstwcfv2/services/RegisterInfoService.svc"/>
+			<wsa10:EndpointReference>
+				<wsa10:Address>https://portal.sibscartoes.pt/tstwcfv2/services/RegisterInfoService.svc</wsa10:Address>
+			</wsa10:EndpointReference>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
