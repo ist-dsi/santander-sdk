@@ -8,6 +8,7 @@ import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.fenixedu.bennu.SantanderSdkSpringConfiguration;
+import org.fenixedu.santandersdk.dto.GetRegisterResponse;
 import org.springframework.stereotype.Service;
 import pt.sibscartoes.portal.wcf.register.info.IRegisterInfoService;
 import pt.sibscartoes.portal.wcf.register.info.dto.RegisterData;
@@ -22,10 +23,12 @@ import javax.xml.namespace.QName;
 @Service
 public class SantanderCardService {
 
-    public RegisterData getRegister(String userName) {
+    public GetRegisterResponse getRegister(String userName) {
         IRegisterInfoService port = initPort(IRegisterInfoService.class, "RegisterInfoService");
 
-        return port.getRegister(userName);
+        RegisterData registerData = port.getRegister(userName);
+
+        return GetRegisterResponse.map(registerData);
     }
 
     public TUIResponseData createRegister(String tuiEntry, byte[] photo) {
