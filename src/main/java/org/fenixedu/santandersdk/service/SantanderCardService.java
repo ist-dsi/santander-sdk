@@ -8,6 +8,7 @@ import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.fenixedu.bennu.SantanderSdkSpringConfiguration;
+import org.fenixedu.santandersdk.dto.CreateRegisterResponse;
 import org.fenixedu.santandersdk.dto.GetRegisterResponse;
 import org.springframework.stereotype.Service;
 import pt.sibscartoes.portal.wcf.register.info.IRegisterInfoService;
@@ -22,6 +23,7 @@ import javax.xml.namespace.QName;
 
 @Service
 public class SantanderCardService {
+    private final static String NAMESPACE_URI = "http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts";
 
     public GetRegisterResponse getRegister(String userName) {
         IRegisterInfoService port = initPort(IRegisterInfoService.class, "RegisterInfoService");
@@ -31,23 +33,25 @@ public class SantanderCardService {
         return GetRegisterResponse.map(registerData);
     }
 
-    public TUIResponseData createRegister(String tuiEntry, byte[] photo) {
+    public CreateRegisterResponse createRegister(String tuiEntry, byte[] photo) {
         TuiPhotoRegisterData photoRegisterData = createPhoto(photo);
         TuiSignatureRegisterData signature = new TuiSignatureRegisterData();
 
         ITUIDetailService port = initPort(ITUIDetailService.class, "TUIDetailService");
 
-        return port.saveRegister(tuiEntry, photoRegisterData, signature);
+        TUIResponseData response = port.saveRegister(tuiEntry, photoRegisterData, signature);
+
+        return CreateRegisterResponse.map(response);
     }
 
     private TuiPhotoRegisterData createPhoto(byte[] photoContents) {
         final QName FILE_NAME =
-                new QName("http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts", "FileName");
+                new QName(NAMESPACE_URI, "FileName");
         final QName FILE_EXTENSION =
-                new QName("http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts", "Extension");
+                new QName(NAMESPACE_URI, "Extension");
         final QName FILE_CONTENTS =
-                new QName("http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts", "FileContents");
-        final QName FILE_SIZE = new QName("http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts", "Size");
+                new QName(NAMESPACE_URI, "FileContents");
+        final QName FILE_SIZE = new QName(NAMESPACE_URI, "Size");
 
         final String EXTENSION = ".jpeg";
 
@@ -66,6 +70,7 @@ public class SantanderCardService {
         factory.setAddress(String.format("https://portal.sibscartoes.pt/tstwcfv2/services/%s.svc", endpoint));
         factory.setBindingId("http://schemas.xmlsoap.org/wsdl/soap12/");
         factory.getFeatures().add(new WSAddressingFeature());
+
         //Add loggers to request
         factory.getInInterceptors().add(new LoggingInInterceptor());
         factory.getOutInterceptors().add(new LoggingOutInterceptor());
@@ -74,6 +79,7 @@ public class SantanderCardService {
         /*define WSDL policy*/
         Client client = ClientProxy.getClient(port);
         HTTPConduit http = (HTTPConduit) client.getConduit();
+
         //Add username and password properties
         http.getAuthorization().setUserName(SantanderSdkSpringConfiguration.getConfiguration().sibsWebServiceUsername());
         http.getAuthorization().setPassword(SantanderSdkSpringConfiguration.getConfiguration().sibsWebServicePassword());

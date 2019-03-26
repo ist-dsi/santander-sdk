@@ -32,15 +32,15 @@ public class GetRegisterResponse {
 
     private GetRegisterResponse() {}
 
-    private GetRegisterStatus getRegisterStatus;
+    private GetRegisterStatus status;
     private DateTime expiryDate;
 
     public GetRegisterStatus getStatus() {
-        return getRegisterStatus;
+        return status;
     }
 
-    public void setStatus(GetRegisterStatus getRegisterStatus) {
-        this.getRegisterStatus = getRegisterStatus;
+    public void setStatus(GetRegisterStatus status) {
+        this.status = status;
     }
 
     public DateTime getExpiryDate() {
