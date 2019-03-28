@@ -6,6 +6,7 @@ import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.fenixedu.bennu.SantanderSdkSpringConfiguration;
 import org.fenixedu.santandersdk.dto.CreateRegisterResponse;
@@ -24,6 +25,10 @@ import javax.xml.namespace.QName;
 @Service
 public class SantanderCardService {
     private final static String NAMESPACE_URI = "http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts";
+
+    // TODO: This probably should be in configurations
+    private final static int CONNECTION_TIMEOUT = 5000;
+    private final static int RECEIVE_TIMEOUT = 10000;
 
     public GetRegisterResponse getRegister(String userName) {
         IRegisterInfoService port = initPort(IRegisterInfoService.class, "RegisterInfoService");
@@ -79,10 +84,18 @@ public class SantanderCardService {
         /*define WSDL policy*/
         Client client = ClientProxy.getClient(port);
         HTTPConduit http = (HTTPConduit) client.getConduit();
+        HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+
+        httpClientPolicy.setConnectionTimeout(CONNECTION_TIMEOUT); //Time in milliseconds
+        httpClientPolicy.setReceiveTimeout(RECEIVE_TIMEOUT); //Time in milliseconds
+        http.setClient(httpClientPolicy);
 
         //Add username and password properties
         http.getAuthorization().setUserName(SantanderSdkSpringConfiguration.getConfiguration().sibsWebServiceUsername());
         http.getAuthorization().setPassword(SantanderSdkSpringConfiguration.getConfiguration().sibsWebServicePassword());
+
+        /*((BindingProvider)port).getRequestContext().put("javax.xml.ws.client.connectionTimeout", CONNECTION_TIMEOUT);
+        ((BindingProvider)port).getRequestContext().put("javax.xml.ws.client.receiveTimeout", REQUEST_TIMEOUT);*/
 
         return port;
     }
