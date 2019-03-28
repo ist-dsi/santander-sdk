@@ -30,7 +30,7 @@ public class GetRegisterResponse {
         return getRegisterResponse;
     }
 
-    private GetRegisterResponse() {}
+    public GetRegisterResponse() {}
 
     private GetRegisterStatus status;
     private DateTime expiryDate;

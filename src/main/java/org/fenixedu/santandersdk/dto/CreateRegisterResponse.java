@@ -25,7 +25,7 @@ public class CreateRegisterResponse {
         return createRegisterResponse;
     }
 
-    private CreateRegisterResponse() {}
+    public CreateRegisterResponse() {}
 
     private boolean registerSuccessful;
     private String responseLine;
