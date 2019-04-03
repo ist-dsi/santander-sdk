@@ -1,5 +1,8 @@
 package org.fenixedu.santandersdk.service;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
@@ -11,7 +14,11 @@ import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.fenixedu.bennu.SantanderSdkSpringConfiguration;
 import org.fenixedu.santandersdk.dto.CreateRegisterResponse;
 import org.fenixedu.santandersdk.dto.GetRegisterResponse;
+import org.fenixedu.santandersdk.dto.Person;
+import org.fenixedu.santandersdk.exception.SantanderValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import pt.sibscartoes.portal.wcf.register.info.IRegisterInfoService;
 import pt.sibscartoes.portal.wcf.register.info.dto.RegisterData;
 import pt.sibscartoes.portal.wcf.tui.ITUIDetailService;
@@ -19,11 +26,16 @@ import pt.sibscartoes.portal.wcf.tui.dto.TUIResponseData;
 import pt.sibscartoes.portal.wcf.tui.dto.TuiPhotoRegisterData;
 import pt.sibscartoes.portal.wcf.tui.dto.TuiSignatureRegisterData;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-
 @Service
 public class SantanderCardService {
+
+    private SantanderLineGenerator santanderLineGenerator;
+
+    @Autowired
+    public SantanderCardService(SantanderLineGenerator santanderLineGenerator) {
+        this.santanderLineGenerator = santanderLineGenerator;
+    }
+
     private final static String NAMESPACE_URI = "http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts";
 
     // TODO: This probably should be in configurations
@@ -49,6 +61,26 @@ public class SantanderCardService {
         return new CreateRegisterResponse(response);
     }
 
+    public CreateRegisterResponse createRegister(Person person, String action) {
+        //TODO validate action ?
+        
+        String tuiEntry = null;
+        try {
+            tuiEntry = santanderLineGenerator.generateLine(person, action);
+        } catch (SantanderValidationException sve) {
+            return new CreateRegisterResponse(false, "error", sve.getMessage());
+        }
+
+        TuiPhotoRegisterData photoRegisterData = createPhoto(person.getPhoto());
+        TuiSignatureRegisterData signature = new TuiSignatureRegisterData();
+
+        ITUIDetailService port = initPort(ITUIDetailService.class, "TUIDetailService");
+
+        TUIResponseData response = port.saveRegister(tuiEntry, photoRegisterData, signature);
+
+        return new CreateRegisterResponse(response);
+    }
+
     private TuiPhotoRegisterData createPhoto(byte[] photoContents) {
         final QName FILE_NAME =
                 new QName(NAMESPACE_URI, "FileName");
@@ -64,7 +96,7 @@ public class SantanderCardService {
         photo.setFileContents(new JAXBElement<>(FILE_CONTENTS, byte[].class, photoContents));
         photo.setSize(new JAXBElement<>(FILE_SIZE, String.class, Integer.toString(photoContents.length)));
         photo.setExtension(new JAXBElement<>(FILE_EXTENSION, String.class, EXTENSION));
-        photo.setFileName(new JAXBElement<>(FILE_NAME, String.class, "foto")); //TODO
+        photo.setFileName(new JAXBElement<>(FILE_NAME, String.class, "foto"));
 
         return photo;
     }
