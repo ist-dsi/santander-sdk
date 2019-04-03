@@ -24,6 +24,12 @@ public class CreateRegisterResponse {
 
     public CreateRegisterResponse() {}
 
+    public CreateRegisterResponse(boolean registerSuccessful, String responseLine, String errorDescription) {
+        setRegisterSuccessful(registerSuccessful);
+        setResponseLine(responseLine);
+        setErrorDescription(errorDescription);
+    }
+
     private boolean registerSuccessful;
     private String responseLine;
     private String errorDescription;
