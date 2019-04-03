@@ -5,16 +5,15 @@ import org.joda.time.format.DateTimeFormat;
 import pt.sibscartoes.portal.wcf.register.info.dto.RegisterData;
 
 public class GetRegisterResponse {
-    public static GetRegisterResponse map(RegisterData registerData) {
-        GetRegisterResponse getRegisterResponse = new GetRegisterResponse();
 
+    public GetRegisterResponse(RegisterData registerData) {
         String status = registerData.getStatus().getValue();
 
         if (status == null) {
             status = registerData.getStatusDescription().getValue();
         }
 
-        getRegisterResponse.setStatus(GetRegisterStatus.fromString(status));
+        this.status = GetRegisterStatus.fromString(status);
 
         DateTime expiryDate = null;
         if (registerData.getExpiryDate() != null) {
@@ -25,9 +24,7 @@ public class GetRegisterResponse {
             }
         }
 
-        getRegisterResponse.setExpiryDate(expiryDate);
-
-        return getRegisterResponse;
+        this.expiryDate = expiryDate;
     }
 
     public GetRegisterResponse() {}

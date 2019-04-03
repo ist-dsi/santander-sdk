@@ -3,26 +3,23 @@ package org.fenixedu.santandersdk.dto;
 import pt.sibscartoes.portal.wcf.tui.dto.TUIResponseData;
 
 public class CreateRegisterResponse {
-    public static CreateRegisterResponse map(TUIResponseData response) {
-        CreateRegisterResponse createRegisterResponse = new CreateRegisterResponse();
 
+    public CreateRegisterResponse(TUIResponseData response) {
         String status = response.getStatus() == null || response.getStatus().getValue() == null ? "" : response
                 .getStatus().getValue().trim();
         boolean registerSuccessful = !status.isEmpty() && !status.toLowerCase().equals("error");
 
-        createRegisterResponse.setRegisterSuccessful(registerSuccessful);
+        this.registerSuccessful = registerSuccessful;
 
         if (response.getTuiResponseLine() != null) {
-            createRegisterResponse.setResponseLine(response.getTuiResponseLine().getValue());
+            this.responseLine = response.getTuiResponseLine().getValue();
         }
 
         if (!registerSuccessful) {
             if (response.getStatusDescription() != null) {
-                createRegisterResponse.setErrorDescription(response.getStatusDescription().getValue());
+                this.errorDescription = response.getStatusDescription().getValue();
             }
         }
-
-        return createRegisterResponse;
     }
 
     public CreateRegisterResponse() {}

@@ -35,7 +35,7 @@ public class SantanderCardService {
 
         RegisterData registerData = port.getRegister(userName);
 
-        return GetRegisterResponse.map(registerData);
+        return new GetRegisterResponse(registerData);
     }
 
     public CreateRegisterResponse createRegister(String tuiEntry, byte[] photo) {
@@ -46,7 +46,7 @@ public class SantanderCardService {
 
         TUIResponseData response = port.saveRegister(tuiEntry, photoRegisterData, signature);
 
-        return CreateRegisterResponse.map(response);
+        return new CreateRegisterResponse(response);
     }
 
     private TuiPhotoRegisterData createPhoto(byte[] photoContents) {
