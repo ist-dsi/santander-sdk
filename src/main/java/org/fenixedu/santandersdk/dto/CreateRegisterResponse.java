@@ -3,21 +3,27 @@ package org.fenixedu.santandersdk.dto;
 import pt.sibscartoes.portal.wcf.tui.dto.TUIResponseData;
 
 public class CreateRegisterResponse {
+    private boolean registerSuccessful;
+    private String responseLine;
+    private String errorDescription;
+    private String requestLine;
 
-    public CreateRegisterResponse(TUIResponseData response) {
+    public CreateRegisterResponse(String requestLine, TUIResponseData response) {
+        setRequestLine(requestLine);
+
         String status = response.getStatus() == null || response.getStatus().getValue() == null ? "" : response
                 .getStatus().getValue().trim();
         boolean registerSuccessful = !status.isEmpty() && !status.toLowerCase().equals("error");
 
-        this.registerSuccessful = registerSuccessful;
+        setRegisterSuccessful(registerSuccessful);
 
         if (response.getTuiResponseLine() != null) {
-            this.responseLine = response.getTuiResponseLine().getValue();
+            setResponseLine(response.getTuiResponseLine().getValue());
         }
 
         if (!registerSuccessful) {
             if (response.getStatusDescription() != null) {
-                this.errorDescription = response.getStatusDescription().getValue();
+                setErrorDescription(response.getStatusDescription().getValue());
             }
         }
     }
@@ -29,10 +35,6 @@ public class CreateRegisterResponse {
         setResponseLine(responseLine);
         setErrorDescription(errorDescription);
     }
-
-    private boolean registerSuccessful;
-    private String responseLine;
-    private String errorDescription;
 
     public boolean wasRegisterSuccessful() {
         return registerSuccessful;
@@ -56,5 +58,13 @@ public class CreateRegisterResponse {
 
     public void setErrorDescription(String errorDescription) {
         this.errorDescription = errorDescription;
+    }
+
+    public String getRequestLine() {
+        return requestLine;
+    }
+
+    public void setRequestLine(String requestLine) {
+        this.requestLine = requestLine;
     }
 }

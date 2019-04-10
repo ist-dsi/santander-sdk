@@ -2,7 +2,9 @@ package org.fenixedu.santandersdk.service;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceException;
 
+import com.google.common.io.BaseEncoding;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
@@ -12,9 +14,9 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.fenixedu.bennu.SantanderSdkSpringConfiguration;
+import org.fenixedu.santandersdk.dto.CreateRegisterRequest;
 import org.fenixedu.santandersdk.dto.CreateRegisterResponse;
 import org.fenixedu.santandersdk.dto.GetRegisterResponse;
-import org.fenixedu.santandersdk.dto.Person;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import pt.sibscartoes.portal.wcf.tui.ITUIDetailService;
 import pt.sibscartoes.portal.wcf.tui.dto.TUIResponseData;
 import pt.sibscartoes.portal.wcf.tui.dto.TuiPhotoRegisterData;
 import pt.sibscartoes.portal.wcf.tui.dto.TuiSignatureRegisterData;
+
 
 @Service
 public class SantanderCardService {
@@ -50,35 +53,33 @@ public class SantanderCardService {
         return new GetRegisterResponse(registerData);
     }
 
-    public CreateRegisterResponse createRegister(String tuiEntry, byte[] photo) {
-        TuiPhotoRegisterData photoRegisterData = createPhoto(photo);
-        TuiSignatureRegisterData signature = new TuiSignatureRegisterData();
-
-        ITUIDetailService port = initPort(ITUIDetailService.class, "TUIDetailService");
-
-        TUIResponseData response = port.saveRegister(tuiEntry, photoRegisterData, signature);
-
-        return new CreateRegisterResponse(response);
-    }
-
-    public CreateRegisterResponse createRegister(Person person, String action) {
+    public CreateRegisterResponse createRegister(CreateRegisterRequest request) {
         //TODO validate action ?
         
-        String tuiEntry = null;
+        String tuiEntry;
         try {
-            tuiEntry = santanderLineGenerator.generateLine(person, action);
+            tuiEntry = santanderLineGenerator.generateLine(request);
         } catch (SantanderValidationException sve) {
             return new CreateRegisterResponse(false, "error", sve.getMessage());
         }
 
-        TuiPhotoRegisterData photoRegisterData = createPhoto(person.getPhoto());
+        TuiPhotoRegisterData photoRegisterData = createPhoto(request.getPhoto());
         TuiSignatureRegisterData signature = new TuiSignatureRegisterData();
 
         ITUIDetailService port = initPort(ITUIDetailService.class, "TUIDetailService");
 
-        TUIResponseData response = port.saveRegister(tuiEntry, photoRegisterData, signature);
+        TUIResponseData responseData;
+        try {
+            responseData = port.saveRegister(tuiEntry, photoRegisterData, signature);
+        } catch (WebServiceException e) {
+            CreateRegisterResponse response = new CreateRegisterResponse(false, "communication error", e.getMessage());
+            response.setRequestLine(tuiEntry);
 
-        return new CreateRegisterResponse(response);
+            return response;
+        }
+
+
+        return new CreateRegisterResponse(tuiEntry, responseData);
     }
 
     private TuiPhotoRegisterData createPhoto(byte[] photoContents) {

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fenixedu.santandersdk.dto.Person;
+import org.fenixedu.santandersdk.dto.CreateRegisterRequest;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class SantanderLineGenerator {
     private SantanderEntryValidator santanderEntryValidator;
 
     @Autowired
-    public SantanderLineGenerator() {
+    public SantanderLineGenerator(SantanderEntryValidator santanderEntryValidator) {
         this.santanderEntryValidator = santanderEntryValidator;
     }
 
@@ -37,7 +37,7 @@ public class SantanderLineGenerator {
 
     private Map<String, CampusAddress> campi = getCampi();
 
-    public String generateLine(Person person, String action) throws SantanderValidationException {
+    public String generateLine(CreateRegisterRequest request) throws SantanderValidationException {
         /*
          * 1. Teacher
          * 2. Researcher
@@ -47,18 +47,18 @@ public class SantanderLineGenerator {
          */
         String line = null;
 
-        List<String> roles = person.getRoles();
+        List<String> roles = request.getRoles();
 
         if (roles.contains("STUDENT")) {
-            line = createLine(person, "STUDENT", action);
+            line = createLine(request, "STUDENT");
         } else if (roles.contains("TEACHER")) {
-            line = createLine(person, "TEACHER", action);
+            line = createLine(request, "TEACHER");
         } else if (roles.contains("RESEARCHER")) {
-            line = createLine(person, "RESEARCHER", action);
+            line = createLine(request, "RESEARCHER");
         } else if (roles.contains("EMPLOYEE")) {
-            line = createLine(person, "EMPLOYEE", action);
+            line = createLine(request, "EMPLOYEE");
         } else if (roles.contains("GRANT_OWNER")) {
-            line = createLine(person, "GRANT_OWNER", action);
+            line = createLine(request, "GRANT_OWNER");
         }
 
         if (line == null) {
@@ -68,22 +68,22 @@ public class SantanderLineGenerator {
         return line;
     }
 
-    private String createLine(Person person, String role, String action) throws SantanderValidationException {
+    private String createLine(CreateRegisterRequest request, String role) throws SantanderValidationException {
 
         List<String> values = new ArrayList<>();
 
         String recordType = "2";
 
-        String idNumber = person.getUsername();
+        String idNumber = request.getUsername();
 
-        String[] names = harvestNames(person.getName());
+        String[] names = harvestNames(request.getName());
         String name = names[0];
         String surname = names[1];
         String middleNames = names[2];
 
         String degreeCode = "";
 
-        CampusAddress campusAddr = campi.get(person.getCampus());
+        CampusAddress campusAddr = campi.get(request.getCampus().toLowerCase());
 
         if (campusAddr == null) {
             throw new SantanderValidationException("Person has no associated campus");
@@ -97,13 +97,13 @@ public class SantanderLineGenerator {
 
         String homeCountry = "";
 
-        String residenceCountry = person.getUsername(); // As stipulated this field will carry the istId instead.
+        String residenceCountry = request.getUsername(); // As stipulated this field will carry the istId instead.
 
         DateTime now = DateTime.now();
 
         String expireDate = now.toString("yyyy") + "/" + now.plusYears(3).toString("yyyy");
 
-        String backNumber = makeZeroPaddedNumber(Integer.parseInt(person.getUsername().substring(3)), 10);
+        String backNumber = makeZeroPaddedNumber(Integer.parseInt(request.getUsername().substring(3)), 10);
 
         if (backNumber == null) {
             throw new SantanderValidationException("Invalid username (username can only have up to 10 characters)");
@@ -113,8 +113,8 @@ public class SantanderLineGenerator {
         String executionYear_field = "";
 
         String unit = "";
-        if (role.equals("TEACHER") && !Strings.isNullOrEmpty(person.getDepartmentAcronym())) {
-            unit = person.getDepartmentAcronym();
+        if (role.equals("TEACHER") && !Strings.isNullOrEmpty(request.getDepartmentAcronym())) {
+            unit = request.getDepartmentAcronym();
         }
 
         String accessControl = "";
@@ -123,7 +123,7 @@ public class SantanderLineGenerator {
 
         String templateCode = ""; //TODO
 
-        String actionCode = action;
+        String actionCode = request.getAction().getName();
 
         String roleCode = getRoleCode(role);
 

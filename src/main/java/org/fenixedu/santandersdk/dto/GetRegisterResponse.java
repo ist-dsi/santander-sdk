@@ -8,6 +8,9 @@ import com.google.common.base.Strings;
 import pt.sibscartoes.portal.wcf.register.info.dto.RegisterData;
 
 public class GetRegisterResponse {
+    private GetRegisterStatus status;
+    private DateTime expiryDate;
+    private String mifare;
 
     public GetRegisterResponse(RegisterData registerData) {
         String status = registerData.getStatus().getValue();
@@ -34,10 +37,6 @@ public class GetRegisterResponse {
     }
 
     public GetRegisterResponse() {}
-
-    private GetRegisterStatus status;
-    private DateTime expiryDate;
-    private String mifare;
 
     public GetRegisterStatus getStatus() {
         return status;

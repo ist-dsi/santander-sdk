@@ -2,21 +2,17 @@ package org.fenixedu.santandersdk.dto;
 
 import java.util.List;
 
-public class Person {
+public class CreateRegisterRequest {
 
     private String username;
-
     private String name;
-
     private List<String> roles;
-
     private String campus;
-
     private String departmentAcronym;
-
     private byte[] photo;
+    private RegisterAction action;
 
-    Person() {
+    public CreateRegisterRequest() {
     }
 
     public String getUsername() {
@@ -65,5 +61,13 @@ public class Person {
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
+    }
+
+    public RegisterAction getAction() {
+        return action;
+    }
+
+    public void setAction(RegisterAction action) {
+        this.action = action;
     }
 }
