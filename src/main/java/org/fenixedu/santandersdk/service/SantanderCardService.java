@@ -1,11 +1,9 @@
 package org.fenixedu.santandersdk.service;
 
-import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceException;
 
-import com.google.common.io.BaseEncoding;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
@@ -17,9 +15,10 @@ import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.fenixedu.bennu.SantanderSdkSpringConfiguration;
 import org.fenixedu.santandersdk.dto.CreateRegisterRequest;
 import org.fenixedu.santandersdk.dto.CreateRegisterResponse;
+import org.fenixedu.santandersdk.dto.CreateRegisterResponse.ErrorType;
 import org.fenixedu.santandersdk.dto.GetRegisterResponse;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
-import org.imgscalr.Scalr;
+import org.fenixedu.santandersdk.service.SantanderLineGenerator.LineBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +28,6 @@ import pt.sibscartoes.portal.wcf.tui.ITUIDetailService;
 import pt.sibscartoes.portal.wcf.tui.dto.TUIResponseData;
 import pt.sibscartoes.portal.wcf.tui.dto.TuiPhotoRegisterData;
 import pt.sibscartoes.portal.wcf.tui.dto.TuiSignatureRegisterData;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Base64;
 
 
 @Service
@@ -63,91 +55,32 @@ public class SantanderCardService {
     }
 
     public CreateRegisterResponse createRegister(CreateRegisterRequest request) {
-        //TODO validate action ?
-        
-        String tuiEntry;
-        TuiPhotoRegisterData photoRegisterData;
+        LineBean tuiEntry;
         try {
             tuiEntry = santanderLineGenerator.generateLine(request);
-            photoRegisterData = createPhoto(request.getPhoto());
         } catch (SantanderValidationException sve) {
-            return new CreateRegisterResponse(false, "error", sve.getMessage());
+            return new CreateRegisterResponse(ErrorType.INVALID_INFORMATION, "line generation error", sve.getMessage());
         }
 
+        TuiPhotoRegisterData photoRegisterData = createPhoto(request.getPhoto());
         TuiSignatureRegisterData signature = new TuiSignatureRegisterData();
 
         ITUIDetailService port = initPort(ITUIDetailService.class, "TUIDetailService");
 
         TUIResponseData responseData;
         try {
-            responseData = port.saveRegister(tuiEntry, photoRegisterData, signature);
+            responseData = port.saveRegister(tuiEntry.getLine(), photoRegisterData, signature);
         } catch (WebServiceException e) {
-            CreateRegisterResponse response = new CreateRegisterResponse(false, "communication error", e.getMessage());
-            response.setRequestLine(tuiEntry);
-
+            CreateRegisterResponse response =
+                    new CreateRegisterResponse(tuiEntry, request.getPhoto(), ErrorType.SANTANDER_COMMUNICATION,
+                            "santander communication error", e.getMessage());
             return response;
         }
 
-
-        return new CreateRegisterResponse(tuiEntry, responseData);
+        return new CreateRegisterResponse(tuiEntry, request.getPhoto(), responseData);
     }
 
-    public BufferedImage readImage(byte[] imageData) throws SantanderValidationException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
-
-        try {
-            return ImageIO.read(bais);
-        } catch (IOException e) {
-            throw new SantanderValidationException("Could not read image");
-        }
-    }
-
-    public byte[] writeImageAsBytes(BufferedImage image) throws SantanderValidationException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        try {
-            ImageIO.write(image, "image/jpeg", out);
-            return out.toByteArray();
-        } catch (IOException e) {
-            throw new SantanderValidationException("Could not write image");
-        }
-    }
-
-    private BufferedImage read(String base64Photo) throws SantanderValidationException {
-        byte[] imageBinary = Base64.getDecoder().decode(base64Photo);
-        BufferedImage image = readImage(imageBinary);
-        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-        result.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);
-        return result;
-    }
-
-    private byte[] transform(String base64Photo) throws SantanderValidationException {
-        BufferedImage image = read(base64Photo);
-        final BufferedImage adjustedImage = transformZoom(image, 9, 10);
-        final BufferedImage avatar = Scalr.resize(adjustedImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, 180, 200);
-        return writeImageAsBytes(avatar);
-    }
-
-    private BufferedImage transformZoom(final BufferedImage source, int xRatio, int yRatio) {
-        int destW, destH;
-        BufferedImage finale;
-        if ((1.0 * source.getWidth() / source.getHeight()) > (1.0 * xRatio / yRatio)) {
-            destH = source.getHeight();
-            destW = (int) Math.round((destH * xRatio * 1.0) / (yRatio * 1.0));
-
-            int padding = (int) Math.round((source.getWidth() - destW) / 2.0);
-            finale = Scalr.crop(source, padding, 0, destW, destH);
-        } else {
-            destW = source.getWidth();
-            destH = (int) Math.round((destW * yRatio * 1.0) / (xRatio * 1.0));
-
-            int padding = (int) Math.round((source.getHeight() - destH) / 2.0);
-            finale = Scalr.crop(source, 0, padding, destW, destH);
-        }
-        return finale;
-    }
-
-    private TuiPhotoRegisterData createPhoto(String base64Photo) throws SantanderValidationException {
+    private TuiPhotoRegisterData createPhoto(byte[] photoContents) {
         final QName FILE_NAME =
                 new QName(NAMESPACE_URI, "FileName");
         final QName FILE_EXTENSION =
@@ -157,8 +90,6 @@ public class SantanderCardService {
         final QName FILE_SIZE = new QName(NAMESPACE_URI, "Size");
 
         final String EXTENSION = ".jpeg";
-
-        byte[] photoContents = transform(base64Photo);
 
         TuiPhotoRegisterData photo = new TuiPhotoRegisterData();
         photo.setFileContents(new JAXBElement<>(FILE_CONTENTS, byte[].class, photoContents));

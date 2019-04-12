@@ -24,6 +24,39 @@ public class SantanderLineGenerator {
         this.santanderEntryValidator = santanderEntryValidator;
     }
 
+    public class LineBean {
+        private String line;
+        private String cardName;
+        private DateTime expiryDate;
+
+        public LineBean() {
+        }
+
+        public String getLine() {
+            return line;
+        }
+
+        public void setLine(String line) {
+            this.line = line;
+        }
+
+        public String getCardName() {
+            return cardName;
+        }
+
+        public void setCardName(String cardName) {
+            this.cardName = cardName;
+        }
+
+        public DateTime getExpiryDate() {
+            return expiryDate;
+        }
+
+        public void setExpiryDate(DateTime expiryDate) {
+            this.expiryDate = expiryDate;
+        }
+    }
+
     private String alamedaAddr = "Avenida Rovisco Pais, 1";
     private String alamedaZip = "1049-001";
     private String alamedaTown = "Lisboa";
@@ -37,7 +70,7 @@ public class SantanderLineGenerator {
 
     private Map<String, CampusAddress> campi = getCampi();
 
-    public String generateLine(CreateRegisterRequest request) throws SantanderValidationException {
+    public LineBean generateLine(CreateRegisterRequest request) throws SantanderValidationException {
         /*
          * 1. Teacher
          * 2. Researcher
@@ -45,30 +78,26 @@ public class SantanderLineGenerator {
          * 4. GrantOwner
          * 5. Student
          */
-        String line = null;
 
         List<String> roles = request.getRoles();
 
         if (roles.contains("STUDENT")) {
-            line = createLine(request, "STUDENT");
+            return createLine(request, "STUDENT");
         } else if (roles.contains("TEACHER")) {
-            line = createLine(request, "TEACHER");
+            return createLine(request, "TEACHER");
         } else if (roles.contains("RESEARCHER")) {
-            line = createLine(request, "RESEARCHER");
+            return createLine(request, "RESEARCHER");
         } else if (roles.contains("EMPLOYEE")) {
-            line = createLine(request, "EMPLOYEE");
+            return createLine(request, "EMPLOYEE");
         } else if (roles.contains("GRANT_OWNER")) {
-            line = createLine(request, "GRANT_OWNER");
-        }
-
-        if (line == null) {
+            return createLine(request, "GRANT_OWNER");
+        } else {
             throw new SantanderValidationException("Person has no valid role");
         }
-
-        return line;
     }
 
-    private String createLine(CreateRegisterRequest request, String role) throws SantanderValidationException {
+    private LineBean createLine(CreateRegisterRequest request, String role) throws SantanderValidationException {
+        LineBean lineBean = new LineBean();
 
         List<String> values = new ArrayList<>();
 
@@ -101,7 +130,9 @@ public class SantanderLineGenerator {
 
         DateTime now = DateTime.now();
 
-        String expireDate = now.toString("yyyy") + "/" + now.plusYears(3).toString("yyyy");
+        DateTime expireDate_dateTime = now.plusYears(3);
+
+        String expireDate = now.toString("yyyy") + "/" + expireDate_dateTime.toString("yyyy");
 
         String backNumber = makeZeroPaddedNumber(Integer.parseInt(request.getUsername().substring(3)), 10);
 
@@ -119,7 +150,7 @@ public class SantanderLineGenerator {
 
         String accessControl = "";
 
-        String expireData_AAMM = now.toString("yy") + now.toString("MM");
+        String expireData_AAMM = expireDate_dateTime.toString("yy") + expireDate_dateTime.toString("MM");
 
         String templateCode = ""; //TODO
 
@@ -216,7 +247,11 @@ public class SantanderLineGenerator {
         values.add(filler); //42
         values.add(endFlag); //43
 
-        return santanderEntryValidator.generateLine(values);
+        lineBean.setLine(santanderEntryValidator.generateLine(values));
+        lineBean.setExpiryDate(expireDate_dateTime);
+        lineBean.setCardName(cardName);
+
+        return lineBean;
     }
 
     private String getRoleCode(String role) {
