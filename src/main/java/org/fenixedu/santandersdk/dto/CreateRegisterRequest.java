@@ -9,7 +9,7 @@ public class CreateRegisterRequest {
     private List<String> roles;
     private String campus;
     private String departmentAcronym;
-    private byte[] photo;
+    private String photo;
     private RegisterAction action;
 
     public CreateRegisterRequest() {
@@ -55,11 +55,11 @@ public class CreateRegisterRequest {
         this.departmentAcronym = departmentAcronym;
     }
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
