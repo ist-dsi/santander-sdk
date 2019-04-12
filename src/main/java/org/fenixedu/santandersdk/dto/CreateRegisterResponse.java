@@ -17,6 +17,7 @@ public class CreateRegisterResponse {
     private String requestLine;
 
     private String cardName;
+    private String identificationNumber;
     private DateTime cardExpiryDate;    
     private byte[] photo;
 
@@ -62,6 +63,8 @@ public class CreateRegisterResponse {
         setRequestLine(request.getLine());
         setCardName(request.getCardName());
         setCardExpiryDate(request.getExpiryDate());
+        setIdentificationNumber(request.getIdentificationNumber());
+
     }
 
     public ErrorType getErrorType() {
@@ -118,5 +121,13 @@ public class CreateRegisterResponse {
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
+    }
+
+    public String getIdentificationNumber() {
+        return identificationNumber;
+    }
+
+    public void setIdentificationNumber(String identificationNumber) {
+        this.identificationNumber = identificationNumber;
     }
 }

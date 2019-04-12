@@ -27,6 +27,7 @@ public class SantanderLineGenerator {
     public class LineBean {
         private String line;
         private String cardName;
+        private String identificationNumber;
         private DateTime expiryDate;
 
         public LineBean() {
@@ -46,6 +47,14 @@ public class SantanderLineGenerator {
 
         public void setCardName(String cardName) {
             this.cardName = cardName;
+        }
+
+        public String getIdentificationNumber() {
+            return this.identificationNumber;
+        }
+
+        public void setIdentificationNumber(String identificationNumber) {
+            this.identificationNumber = identificationNumber;
         }
 
         public DateTime getExpiryDate() {
@@ -250,6 +259,7 @@ public class SantanderLineGenerator {
         lineBean.setLine(santanderEntryValidator.generateLine(values));
         lineBean.setExpiryDate(expireDate_dateTime);
         lineBean.setCardName(cardName);
+        lineBean.setIdentificationNumber(idNumber);
 
         return lineBean;
     }
