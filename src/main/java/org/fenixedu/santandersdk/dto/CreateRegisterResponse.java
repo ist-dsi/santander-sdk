@@ -8,7 +8,7 @@ import pt.sibscartoes.portal.wcf.tui.dto.TUIResponseData;
 public class CreateRegisterResponse {
 
     public enum ErrorType {
-        INVALID_INFORMATION, SANTANDER_COMMUNICATION, REQUEST_REFUSED, NONE;
+        INVALID_INFORMATION, SANTANDER_COMMUNICATION, REQUEST_REFUSED
     }
 
     private ErrorType errorType;
@@ -44,7 +44,7 @@ public class CreateRegisterResponse {
                 .getStatus().getValue().trim();
 
         ErrorType errorType =
-                !status.isEmpty() && !status.toLowerCase().equals("error") ? ErrorType.NONE : ErrorType.REQUEST_REFUSED;
+                !status.isEmpty() && !status.toLowerCase().equals("error") ? null : ErrorType.REQUEST_REFUSED;
 
         setErrorType(errorType);
 
@@ -52,7 +52,7 @@ public class CreateRegisterResponse {
             setResponseLine(response.getTuiResponseLine().getValue());
         }
 
-        if (errorType != ErrorType.NONE && response.getStatusDescription() != null) {
+        if (errorType != null && response.getStatusDescription() != null) {
             setErrorDescription(response.getStatusDescription().getValue());
         }
     }
@@ -64,7 +64,10 @@ public class CreateRegisterResponse {
         setCardName(request.getCardName());
         setCardExpiryDate(request.getExpiryDate());
         setIdentificationNumber(request.getIdentificationNumber());
+    }
 
+    public boolean wasRegisterSuccessful() {
+        return errorType == null; // unknown state
     }
 
     public ErrorType getErrorType() {
