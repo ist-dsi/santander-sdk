@@ -1,25 +1,16 @@
 package org.fenixedu.santandersdk.dto;
 
-import org.fenixedu.santandersdk.service.SantanderLineGenerator.LineBean;
-import org.joda.time.DateTime;
-
 import pt.sibscartoes.portal.wcf.tui.dto.TUIResponseData;
 
 public class CreateRegisterResponse {
 
     public enum ErrorType {
-        INVALID_INFORMATION, SANTANDER_COMMUNICATION, REQUEST_REFUSED
+        SANTANDER_COMMUNICATION, REQUEST_REFUSED
     }
 
     private ErrorType errorType;
     private String responseLine;
     private String errorDescription;
-    private String requestLine;
-
-    private String cardName;
-    private String identificationNumber;
-    private DateTime cardExpiryDate;    
-    private byte[] photo;
 
     public CreateRegisterResponse(ErrorType errorType, String responseLine, String errorDescription) {
         setErrorType(errorType);
@@ -27,19 +18,7 @@ public class CreateRegisterResponse {
         setErrorDescription(errorDescription);
     }
 
-    public CreateRegisterResponse(LineBean request, byte[] photo, ErrorType errorType, String responseLine,
-            String errorDescription) {
-        setErrorType(errorType);
-        setResponseLine(responseLine);
-        setErrorDescription(errorDescription);
-        setRequest(request);
-        setPhoto(photo);
-    }
-
-    public CreateRegisterResponse(LineBean request, byte[] photo, TUIResponseData response) {
-        setRequest(request);
-        setPhoto(photo);
-
+    public CreateRegisterResponse(TUIResponseData response) {
         String status = response.getStatus() == null || response.getStatus().getValue() == null ? "" : response
                 .getStatus().getValue().trim();
 
@@ -59,15 +38,8 @@ public class CreateRegisterResponse {
 
     public CreateRegisterResponse() {}
 
-    public void setRequest(LineBean request) {
-        setRequestLine(request.getLine());
-        setCardName(request.getCardName());
-        setCardExpiryDate(request.getExpiryDate());
-        setIdentificationNumber(request.getIdentificationNumber());
-    }
-
     public boolean wasRegisterSuccessful() {
-        return errorType == null; // unknown state
+        return errorType == null;
     }
 
     public ErrorType getErrorType() {
@@ -92,45 +64,5 @@ public class CreateRegisterResponse {
 
     public void setErrorDescription(String errorDescription) {
         this.errorDescription = errorDescription;
-    }
-
-    public String getRequestLine() {
-        return requestLine;
-    }
-
-    public void setRequestLine(String requestLine) {
-        this.requestLine = requestLine;
-    }
-
-    public DateTime getCardExpiryDate() {
-        return cardExpiryDate;
-    }
-
-    public void setCardExpiryDate(DateTime cardExpiryDate) {
-        this.cardExpiryDate = cardExpiryDate;
-    }
-
-    public String getCardName() {
-        return cardName;
-    }
-
-    public void setCardName(String cardName) {
-        this.cardName = cardName;
-    }
-
-    public byte[] getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
-    }
-
-    public String getIdentificationNumber() {
-        return identificationNumber;
-    }
-
-    public void setIdentificationNumber(String identificationNumber) {
-        this.identificationNumber = identificationNumber;
     }
 }

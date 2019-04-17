@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fenixedu.santandersdk.dto.CardPreviewBean;
 import org.fenixedu.santandersdk.dto.CreateRegisterRequest;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
 import org.joda.time.DateTime;
@@ -24,48 +25,6 @@ public class SantanderLineGenerator {
         this.santanderEntryValidator = santanderEntryValidator;
     }
 
-    public class LineBean {
-        private String line;
-        private String cardName;
-        private String identificationNumber;
-        private DateTime expiryDate;
-
-        public LineBean() {
-        }
-
-        public String getLine() {
-            return line;
-        }
-
-        public void setLine(String line) {
-            this.line = line;
-        }
-
-        public String getCardName() {
-            return cardName;
-        }
-
-        public void setCardName(String cardName) {
-            this.cardName = cardName;
-        }
-
-        public String getIdentificationNumber() {
-            return this.identificationNumber;
-        }
-
-        public void setIdentificationNumber(String identificationNumber) {
-            this.identificationNumber = identificationNumber;
-        }
-
-        public DateTime getExpiryDate() {
-            return expiryDate;
-        }
-
-        public void setExpiryDate(DateTime expiryDate) {
-            this.expiryDate = expiryDate;
-        }
-    }
-
     private String alamedaAddr = "Avenida Rovisco Pais, 1";
     private String alamedaZip = "1049-001";
     private String alamedaTown = "Lisboa";
@@ -79,7 +38,7 @@ public class SantanderLineGenerator {
 
     private Map<String, CampusAddress> campi = getCampi();
 
-    public LineBean generateLine(CreateRegisterRequest request) throws SantanderValidationException {
+    public CardPreviewBean generateLine(CreateRegisterRequest request) throws SantanderValidationException {
         /*
          * 1. Teacher
          * 2. Researcher
@@ -105,8 +64,8 @@ public class SantanderLineGenerator {
         }
     }
 
-    private LineBean createLine(CreateRegisterRequest request, String role) throws SantanderValidationException {
-        LineBean lineBean = new LineBean();
+    private CardPreviewBean createLine(CreateRegisterRequest request, String role) throws SantanderValidationException {
+        CardPreviewBean cardPreviewBean = new CardPreviewBean();
 
         List<String> values = new ArrayList<>();
 
@@ -256,12 +215,13 @@ public class SantanderLineGenerator {
         values.add(filler); //42
         values.add(endFlag); //43
 
-        lineBean.setLine(santanderEntryValidator.generateLine(values));
-        lineBean.setExpiryDate(expireDate_dateTime);
-        lineBean.setCardName(cardName);
-        lineBean.setIdentificationNumber(idNumber);
+        cardPreviewBean.setLine(santanderEntryValidator.generateLine(values));
+        cardPreviewBean.setExpiryDate(expireDate_dateTime);
+        cardPreviewBean.setCardName(cardName);
+        cardPreviewBean.setIdentificationNumber(idNumber);
+        cardPreviewBean.setPhoto(request.getPhoto());
 
-        return lineBean;
+        return cardPreviewBean;
     }
 
     private String getRoleCode(String role) {

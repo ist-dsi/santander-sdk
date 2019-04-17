@@ -13,12 +13,12 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.fenixedu.bennu.SantanderSdkSpringConfiguration;
+import org.fenixedu.santandersdk.dto.CardPreviewBean;
 import org.fenixedu.santandersdk.dto.CreateRegisterRequest;
 import org.fenixedu.santandersdk.dto.CreateRegisterResponse;
 import org.fenixedu.santandersdk.dto.CreateRegisterResponse.ErrorType;
 import org.fenixedu.santandersdk.dto.GetRegisterResponse;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
-import org.fenixedu.santandersdk.service.SantanderLineGenerator.LineBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,30 +54,28 @@ public class SantanderCardService {
         return new GetRegisterResponse(registerData);
     }
 
-    public CreateRegisterResponse createRegister(CreateRegisterRequest request) {
-        LineBean tuiEntry;
-        try {
-            tuiEntry = santanderLineGenerator.generateLine(request);
-        } catch (SantanderValidationException sve) {
-            return new CreateRegisterResponse(ErrorType.INVALID_INFORMATION, "line generation error", sve.getMessage());
-        }
+    public CardPreviewBean generateCardRequest(CreateRegisterRequest request) throws SantanderValidationException {
+        return santanderLineGenerator.generateLine(request);
+    }
 
-        TuiPhotoRegisterData photoRegisterData = createPhoto(request.getPhoto());
+    public CreateRegisterResponse createRegister(CardPreviewBean cardPreviewBean) {
+        String tuiEntry = cardPreviewBean.getRequestLine();
+        TuiPhotoRegisterData photoRegisterData = createPhoto(cardPreviewBean.getPhoto());
         TuiSignatureRegisterData signature = new TuiSignatureRegisterData();
 
         ITUIDetailService port = initPort(ITUIDetailService.class, "TUIDetailService");
 
         TUIResponseData responseData;
         try {
-            responseData = port.saveRegister(tuiEntry.getLine(), photoRegisterData, signature);
+            responseData = port.saveRegister(tuiEntry, photoRegisterData, signature);
         } catch (WebServiceException e) {
             CreateRegisterResponse response =
-                    new CreateRegisterResponse(tuiEntry, request.getPhoto(), ErrorType.SANTANDER_COMMUNICATION,
-                            "santander communication error", e.getMessage());
+                    new CreateRegisterResponse(ErrorType.SANTANDER_COMMUNICATION, "santander communication error",
+                            e.getMessage());
             return response;
         }
 
-        return new CreateRegisterResponse(tuiEntry, request.getPhoto(), responseData);
+        return new CreateRegisterResponse(responseData);
     }
 
     private TuiPhotoRegisterData createPhoto(byte[] photoContents) {
