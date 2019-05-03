@@ -31,12 +31,12 @@ import pt.sibscartoes.portal.wcf.tui.dto.TuiSignatureRegisterData;
 
 
 @Service
-public class SantanderCardService {
+public class SantanderSdkService {
 
     private SantanderLineGenerator santanderLineGenerator;
 
     @Autowired
-    public SantanderCardService(SantanderLineGenerator santanderLineGenerator) {
+    public SantanderSdkService(SantanderLineGenerator santanderLineGenerator) {
         this.santanderLineGenerator = santanderLineGenerator;
     }
 

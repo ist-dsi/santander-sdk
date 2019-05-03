@@ -122,7 +122,7 @@ public class SantanderLineGenerator {
 
         String templateCode = ""; //TODO
 
-        String actionCode = request.getAction().getName();
+        String actionCode = request.getAction().name();
 
         String roleCode = getRoleCode(role);
 
