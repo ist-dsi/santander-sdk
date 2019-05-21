@@ -220,6 +220,7 @@ public class SantanderLineGenerator {
         cardPreviewBean.setCardName(cardName);
         cardPreviewBean.setIdentificationNumber(idNumber);
         cardPreviewBean.setPhoto(request.getPhoto());
+        cardPreviewBean.setRole(role);
 
         return cardPreviewBean;
     }

@@ -8,6 +8,7 @@ public class CardPreviewBean {
     private String identificationNumber;
     private String cardName;
     private DateTime expiryDate;
+    private String role;
     private byte[] photo;
 
     public CardPreviewBean() {
@@ -43,6 +44,14 @@ public class CardPreviewBean {
 
     public void setExpiryDate(DateTime expiryDate) {
         this.expiryDate = expiryDate;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public byte[] getPhoto() {
