@@ -65,6 +65,28 @@ public class SantanderLineGenerator {
     }
 
     private CardPreviewBean createLine(CreateRegisterRequest request, String role) throws SantanderValidationException {
+        List<String> errors = new ArrayList<>();
+        if (Strings.isNullOrEmpty(request.getUsername())) {
+            errors.add("Missing username");
+        }
+
+        if (Strings.isNullOrEmpty(request.getName())) {
+            errors.add("Missing name");
+        }
+
+        if (Strings.isNullOrEmpty(request.getCampus())) {
+            errors.add("Missing campus");
+        }
+
+        if (role.equals("TEACHER") && Strings.isNullOrEmpty(request.getDepartmentAcronym())) {
+            errors.add("Missing department acronym");
+        }
+
+        if (!errors.isEmpty()) {
+            String errors_message = String.join("\n", errors);
+            throw new SantanderValidationException(errors_message);
+        }
+
         CardPreviewBean cardPreviewBean = new CardPreviewBean();
 
         List<String> values = new ArrayList<>();
@@ -98,7 +120,8 @@ public class SantanderLineGenerator {
 
         DateTime now = DateTime.now();
 
-        DateTime expireDate_dateTime = now.plusYears(3);
+        DateTime expireDate_dateTime =
+                now.plusYears(3).dayOfMonth().withMaximumValue().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
 
         String expireDate = now.toString("yyyy") + "/" + expireDate_dateTime.toString("yyyy");
 
