@@ -69,7 +69,9 @@ public class CreateRegisterRequest {
     }
 
     public void setPhoto(BufferedImage photo) {
-        this.photo = transform(photo);
+        if (photo != null) {
+            this.photo = transform(photo);
+        }
     }
 
     public RegisterAction getAction() {

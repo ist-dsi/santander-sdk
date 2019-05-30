@@ -82,6 +82,10 @@ public class SantanderLineGenerator {
             errors.add("Missing department acronym");
         }
 
+        if (request.getPhoto() == null) {
+            errors.add("Missing photo");
+        }
+
         if (!errors.isEmpty()) {
             String errors_message = String.join("\n", errors);
             throw new SantanderValidationException(errors_message);
