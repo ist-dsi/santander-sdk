@@ -11,6 +11,7 @@ public class GetRegisterResponse {
     private GetRegisterStatus status;
     private DateTime expiryDate;
     private String mifare;
+    private String serialNumber;
 
     public GetRegisterResponse(RegisterData registerData) {
         String status = registerData.getStatus().getValue();
@@ -34,6 +35,9 @@ public class GetRegisterResponse {
 
         this.mifare = registerData.getMifareNumber() == null || Strings
                 .isNullOrEmpty(registerData.getMifareNumber().getValue()) ? null : registerData.getMifareNumber().getValue();
+
+        this.serialNumber = registerData.getSerialNumber() == null || Strings
+                .isNullOrEmpty(registerData.getSerialNumber().getValue()) ? null : registerData.getSerialNumber().getValue();
     }
 
     public GetRegisterResponse() {}
@@ -60,5 +64,13 @@ public class GetRegisterResponse {
 
     public void setMifare(String mifare) {
         this.mifare = mifare;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
 }
