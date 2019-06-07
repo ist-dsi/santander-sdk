@@ -242,12 +242,12 @@ public class SantanderLineGenerator {
         values.add(filler); //42
         values.add(endFlag); //43
 
-        cardPreviewBean.setLine(santanderEntryValidator.generateLine(values));
+        cardPreviewBean.setRequestLine(santanderEntryValidator.generateLine(values));
         cardPreviewBean.setExpiryDate(expireDate_dateTime);
         cardPreviewBean.setCardName(cardName);
         cardPreviewBean.setIdentificationNumber(idNumber);
         cardPreviewBean.setPhoto(request.getPhoto());
-        cardPreviewBean.setRole(role);
+        cardPreviewBean.setRole(roleDesc);
 
         return cardPreviewBean;
     }

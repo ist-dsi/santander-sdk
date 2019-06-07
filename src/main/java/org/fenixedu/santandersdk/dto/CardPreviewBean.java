@@ -18,7 +18,7 @@ public class CardPreviewBean {
         return requestLine;
     }
 
-    public void setLine(String line) {
+    public void setRequestLine(String line) {
         this.requestLine = line;
     }
 
