@@ -10,6 +10,7 @@ import pt.sibscartoes.portal.wcf.register.info.dto.RegisterData;
 public class GetRegisterResponse {
     private GetRegisterStatus status;
     private DateTime expiryDate;
+    private DateTime expeditionDate;
     private String mifare;
     private String serialNumber;
 
@@ -23,6 +24,7 @@ public class GetRegisterResponse {
         this.status = GetRegisterStatus.fromString(status);
 
         DateTime expiryDate = null;
+
         if (registerData.getExpiryDate() != null) {
             String expiryDateString = registerData.getExpiryDate().getValue();
 
@@ -32,6 +34,18 @@ public class GetRegisterResponse {
         }
 
         this.expiryDate = expiryDate;
+
+        DateTime expeditionDate = null;
+
+        if (registerData.getExpeditionDate() != null) {
+            String expeditionDateString = registerData.getExpeditionDate().getValue();
+
+            if (expeditionDateString != null) {
+                expeditionDate = DateTime.parse(expeditionDateString, DateTimeFormat.forPattern("dd-MM-yyyy"));
+            }
+        }
+
+        this.expeditionDate = expeditionDate;
 
         this.mifare = registerData.getMifareNumber() == null || Strings
                 .isNullOrEmpty(registerData.getMifareNumber().getValue()) ? null : registerData.getMifareNumber().getValue();
@@ -56,6 +70,14 @@ public class GetRegisterResponse {
 
     public void setExpiryDate(DateTime expiryDate) {
         this.expiryDate = expiryDate;
+    }
+
+    public DateTime getExpeditionDate() {
+        return expeditionDate;
+    }
+
+    public void setExpeditionDate(DateTime expeditionDate) {
+        this.expeditionDate = expeditionDate;
     }
 
     public String getMifare() {
