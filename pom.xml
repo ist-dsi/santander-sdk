@@ -22,6 +22,26 @@
         <version.org.apache.cxf>3.1.10</version.org.apache.cxf>
         <version.org.imgscalr.imgscalr-lib>4.2</version.org.imgscalr.imgscalr-lib>
     </properties>
+         
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://jira.fenixedu.org/browse/STDSDK</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License v3.0</name>
+            <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:ist-dsi/santander-sdk.git</connection>
+        <developerConnection>scm:git:git@github.com:ist-dsi/santander-sdk.git</developerConnection>
+        <url>http://fenixedu.org</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <build>
         <plugins>
