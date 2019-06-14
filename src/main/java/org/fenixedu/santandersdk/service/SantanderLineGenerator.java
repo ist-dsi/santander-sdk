@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.fenixedu.santandersdk.dto.CardPreviewBean;
 import org.fenixedu.santandersdk.dto.CreateRegisterRequest;
+import org.fenixedu.santandersdk.exception.SantanderNoRoleAvailableException;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class SantanderLineGenerator {
         } else if (roles.contains("GRANT_OWNER")) {
             return createLine(request, "GRANT_OWNER");
         } else {
-            throw new SantanderValidationException("Person has no valid role");
+            throw new SantanderNoRoleAvailableException("Person has no valid role");
         }
     }
 
