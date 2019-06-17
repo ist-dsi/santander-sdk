@@ -1,14 +1,17 @@
 package org.fenixedu.santandersdk.service;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fenixedu.commons.StringNormalizer;
 import org.fenixedu.santandersdk.dto.CardPreviewBean;
 import org.fenixedu.santandersdk.dto.CreateRegisterRequest;
 import org.fenixedu.santandersdk.dto.PickupAddress;
-import org.fenixedu.santandersdk.exception.SantanderNoRoleAvailableException;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,26 +22,34 @@ import com.google.common.base.Strings;
 
 @Service
 public class SantanderLineGenerator {
+    private final Map<String, String> charReplacementMap = new HashMap<>();
+    private final CharsetEncoder latin1CharsetEncoder = Charset.forName("ISO-8859-1").newEncoder();
 
     private SantanderEntryValidator santanderEntryValidator;
 
     @Autowired
     public SantanderLineGenerator(SantanderEntryValidator santanderEntryValidator) {
         this.santanderEntryValidator = santanderEntryValidator;
+        charReplacementMap.put("ł", "l");
+        charReplacementMap.put("Ł", "L");
+        charReplacementMap.put("Đ", "D");
+        charReplacementMap.put("đ", "d");
+        charReplacementMap.put("æ", "ae");
+        charReplacementMap.put("ı", "i");
+        charReplacementMap.put("I", "I");
     }
 
-    private String alamedaAddr = "Avenida Rovisco Pais, 1";
-    private String alamedaZip = "1049-001";
-    private String alamedaTown = "Lisboa";
-    private String tagusAddr = "Av. Prof. Doutor Aníbal Cavaco Silva";
-    private String tagusZip = "2744-016";
-    private String tagusTown = "Porto Salvo";
-    private String itnAddr = "Estrada Nacional 10 (ao Km 139,7)";
-    private String itnZip = "2695-066";
-    private String itnTown = "Bobadela";
-    private String IST_FULL_NAME = "Instituto Superior Técnico";
-
-    private Map<String, CampusAddress> campi = getCampi();
+    private String[] normalizeCardName(final String[] names) {
+        return Arrays.stream(names).map(name -> {
+            if (!latin1CharsetEncoder.canEncode(name)) {
+                for (final String replacementChar : charReplacementMap.keySet()) {
+                    name = name.replaceAll(replacementChar, charReplacementMap.get(replacementChar));
+                }
+                return StringNormalizer.normalizePreservingCapitalizedLetters(name);
+            }
+            return name;
+        }).toArray(String[]::new);
+    }
 
     public CardPreviewBean generateLine(CreateRegisterRequest request) throws SantanderValidationException {
         List<String> errors = new ArrayList<>();
@@ -78,6 +89,8 @@ public class SantanderLineGenerator {
         String idNumber = request.getUsername();
 
         String[] names = harvestNames(request.getName());
+        String[] cardNames = normalizeCardName(names);
+        
         String name = names[0];
         String surname = names[1];
         String middleNames = names[2];
@@ -153,7 +166,7 @@ public class SantanderLineGenerator {
 
         String aditionalData = "1"; // TODO
 
-        String cardName = names[0].toUpperCase() + " " + names[1].toUpperCase();
+        String cardName = cardNames[0].toUpperCase() + " " + cardNames[1].toUpperCase();
 
         String email = ""; // TODO
 
@@ -304,36 +317,5 @@ public class SantanderLineGenerator {
         String format = "%0" + size + "d";
         return String.format(format, number);
     }
-
-    private class CampusAddress {
-        private final String address;
-        private final String zip;
-        private final String town;
-
-        CampusAddress(String address, String zip, String town) {
-            this.address = address;
-            this.zip = zip;
-            this.town = town;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public String getZip() {
-            return zip;
-        }
-
-        public String getTown() {
-            return town;
-        }
-    }
-
-    private Map<String, CampusAddress> getCampi() {
-        Map<String, CampusAddress> exports = new HashMap<String, CampusAddress>();
-        exports.put("alameda", new CampusAddress(alamedaAddr, alamedaZip, alamedaTown));
-        exports.put("tagus", new CampusAddress(tagusAddr, tagusZip, tagusTown));
-        exports.put("itn", new CampusAddress(itnAddr, itnZip, itnTown));
-        return exports;
-    }
+    
 }
