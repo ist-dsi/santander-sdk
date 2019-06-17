@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.fenixedu.santandersdk.dto.CardPreviewBean;
 import org.fenixedu.santandersdk.dto.CreateRegisterRequest;
+import org.fenixedu.santandersdk.dto.PickupAddress;
 import org.fenixedu.santandersdk.exception.SantanderNoRoleAvailableException;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
 import org.joda.time.DateTime;
@@ -40,33 +41,9 @@ public class SantanderLineGenerator {
     private Map<String, CampusAddress> campi = getCampi();
 
     public CardPreviewBean generateLine(CreateRegisterRequest request) throws SantanderValidationException {
-        /*
-         * 1. Teacher
-         * 2. Researcher
-         * 3. Employee
-         * 4. GrantOwner
-         * 5. Student
-         */
-
-        List<String> roles = request.getRoles();
-
-        if (roles.contains("STUDENT")) {
-            return createLine(request, "STUDENT");
-        } else if (roles.contains("TEACHER")) {
-            return createLine(request, "TEACHER");
-        } else if (roles.contains("RESEARCHER")) {
-            return createLine(request, "RESEARCHER");
-        } else if (roles.contains("EMPLOYEE")) {
-            return createLine(request, "EMPLOYEE");
-        } else if (roles.contains("GRANT_OWNER")) {
-            return createLine(request, "GRANT_OWNER");
-        } else {
-            throw new SantanderNoRoleAvailableException("Person has no valid role");
-        }
-    }
-
-    private CardPreviewBean createLine(CreateRegisterRequest request, String role) throws SantanderValidationException {
         List<String> errors = new ArrayList<>();
+        String role = request.getRole();
+
         if (Strings.isNullOrEmpty(request.getUsername())) {
             errors.add("Missing username");
         }
@@ -107,17 +84,17 @@ public class SantanderLineGenerator {
 
         String degreeCode = "";
 
-        CampusAddress campusAddr = campi.get(request.getCampus().toLowerCase());
+        PickupAddress pickupAddress = request.getPickupAddress();
 
-        if (campusAddr == null) {
+        if (pickupAddress == null) {
             throw new SantanderValidationException("Person has no associated campus");
         }
 
-        String address1 = campusAddr.getAddress();
-        String address2 = IST_FULL_NAME;
+        String address1 = pickupAddress.getAddress1();
+        String address2 = pickupAddress.getAddress2();
 
-        String zipCode = campusAddr.getZip();
-        String town = campusAddr.getTown();
+        String zipCode = pickupAddress.getZipCode();
+        String town = pickupAddress.getZipDescriptive();
 
         String homeCountry = "";
 

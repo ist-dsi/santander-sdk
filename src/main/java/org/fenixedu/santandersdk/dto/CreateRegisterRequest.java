@@ -15,12 +15,13 @@ public class CreateRegisterRequest {
 
     private String username;
     private String name;
-    private List<String> roles;
+    private String role;
     private String campus;
     private String departmentAcronym;
     private byte[] photo;
     private RegisterAction action;
-
+    private PickupAddress pickupAddress;
+    
     public CreateRegisterRequest() {
     }
 
@@ -40,12 +41,12 @@ public class CreateRegisterRequest {
         this.name = name;
     }
 
-    public List<String> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getCampus() {
@@ -80,6 +81,14 @@ public class CreateRegisterRequest {
 
     public void setAction(RegisterAction action) {
         this.action = action;
+    }
+
+    public PickupAddress getPickupAddress() {
+        return pickupAddress;
+    }
+
+    public void setPickupAddress(PickupAddress pickupAddress) {
+        this.pickupAddress = pickupAddress;
     }
 
     private byte[] transform(final BufferedImage image) {
