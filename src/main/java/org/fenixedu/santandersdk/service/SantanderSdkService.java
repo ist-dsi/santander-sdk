@@ -101,7 +101,7 @@ public class SantanderSdkService {
     private <T> T initPort(Class<T> serviceType, String endpoint) {
         JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
         factory.setServiceClass(serviceType);
-        factory.setAddress(String.format("https://portal.sibscartoes.pt/tstwcfv2/services/%s.svc", endpoint));
+        factory.setAddress(String.format(SantanderSdkSpringConfiguration.getConfiguration().sibsWebServiceAddress(), endpoint));
         factory.setBindingId("http://schemas.xmlsoap.org/wsdl/soap12/");
         factory.getFeatures().add(new WSAddressingFeature());
 

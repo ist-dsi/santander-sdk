@@ -20,6 +20,12 @@ public class SantanderSdkSpringConfiguration {
                 key = "sibs.webService.password",
                 description = "Password used to communicate with the SIBS Web Service, which returns the ID card production state.")
         String sibsWebServicePassword();
+
+        @ConfigurationProperty(
+                key = "sibs.webService.address",
+                defaultValue = "https://portal.sibscartoes.pt/tstwcfv2/services/%s.svc"
+        )
+        String sibsWebServiceAddress();
     }
 
     public static ConfigurationProperties getConfiguration() {
