@@ -43,8 +43,8 @@ public class SantanderSdkService {
     private final static String NAMESPACE_URI = "http://schemas.datacontract.org/2004/07/SibsCards.Wcf.Services.DataContracts";
 
     // TODO: This probably should be in configurations
-    private final static int CONNECTION_TIMEOUT = 5000;
-    private final static int RECEIVE_TIMEOUT = 10000;
+    private final static int CONNECTION_TIMEOUT = 50000;
+    private final static int RECEIVE_TIMEOUT = 100000;
 
     public GetRegisterResponse getRegister(String userName) {
         IRegisterInfoService port = initPort(IRegisterInfoService.class, "RegisterInfoService");
@@ -101,7 +101,8 @@ public class SantanderSdkService {
     private <T> T initPort(Class<T> serviceType, String endpoint) {
         JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
         factory.setServiceClass(serviceType);
-        factory.setAddress(String.format(SantanderSdkSpringConfiguration.getConfiguration().sibsWebServiceAddress(), endpoint));
+        factory.setAddress(String.format(SantanderSdkSpringConfiguration.getConfiguration().sibsWebServiceAddress() + "/%s.svc",
+                endpoint));
         factory.setBindingId("http://schemas.xmlsoap.org/wsdl/soap12/");
         factory.getFeatures().add(new WSAddressingFeature());
 

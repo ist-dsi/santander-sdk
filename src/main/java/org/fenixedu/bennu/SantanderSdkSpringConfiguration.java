@@ -23,7 +23,7 @@ public class SantanderSdkSpringConfiguration {
 
         @ConfigurationProperty(
                 key = "sibs.webService.address",
-                defaultValue = "https://portal.sibscartoes.pt/tstwcfv2/services/%s.svc"
+                defaultValue = "https://portal.sibscartoes.pt/tstwcfv2/services"
         )
         String sibsWebServiceAddress();
     }
