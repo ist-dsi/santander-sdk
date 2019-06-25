@@ -5,7 +5,19 @@ import pt.sibscartoes.portal.wcf.tui.dto.TUIResponseData;
 public class CreateRegisterResponse {
 
     public enum ErrorType {
-        SANTANDER_COMMUNICATION, REQUEST_REFUSED
+        SANTANDER_COMMUNICATION("santander.sdk.error.communication.with.santander"),
+        REQUEST_REFUSED("santander.sdk.error.request.refused");
+
+        public String errorMessage;
+
+        private ErrorType(String errorMessage) {
+            this.errorMessage = errorMessage;
+        }
+
+        public String getErrorMessage() {
+            return this.errorMessage;
+        }
+
     }
 
     private ErrorType errorType;
