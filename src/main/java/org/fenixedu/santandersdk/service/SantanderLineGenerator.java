@@ -14,6 +14,8 @@ import org.fenixedu.santandersdk.dto.CreateRegisterRequest;
 import org.fenixedu.santandersdk.dto.PickupAddress;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ import com.google.common.base.Strings;
 
 @Service
 public class SantanderLineGenerator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SantanderLineGenerator.class);
     private final Map<String, String> charReplacementMap = new HashMap<>();
     private final CharsetEncoder latin1CharsetEncoder = Charset.forName("ISO-8859-1").newEncoder();
 
@@ -56,23 +60,23 @@ public class SantanderLineGenerator {
         String role = request.getRole();
 
         if (Strings.isNullOrEmpty(request.getUsername())) {
-            errors.add("Missing username");
+            errors.add("santander.sdk.error.line.generation.missing.username");
         }
 
         if (Strings.isNullOrEmpty(request.getName())) {
-            errors.add("Missing name");
+            errors.add("santander.sdk.error.line.generation.missing.name");
         }
 
         if (Strings.isNullOrEmpty(request.getCampus())) {
-            errors.add("Missing campus");
+            errors.add("santander.sdk.error.line.generation.missing.campus");
         }
 
         if (role.equals("TEACHER") && Strings.isNullOrEmpty(request.getDepartmentAcronym())) {
-            errors.add("Missing department acronym");
+            errors.add("santander.sdk.error.line.generation.missing.department.acronym");
         }
 
         if (request.getPhoto() == null) {
-            errors.add("Missing photo");
+            errors.add("santander.sdk.error.line.generation.missing.photo");
         }
 
         if (!errors.isEmpty()) {
@@ -100,7 +104,7 @@ public class SantanderLineGenerator {
         PickupAddress pickupAddress = request.getPickupAddress();
 
         if (pickupAddress == null) {
-            throw new SantanderValidationException("Person has no associated campus");
+            throw new SantanderValidationException("santander.sdk.error.line.generation.user.has.no.current.campus");
         }
 
         String address1 = pickupAddress.getAddress1();
@@ -123,7 +127,7 @@ public class SantanderLineGenerator {
         String backNumber = makeZeroPaddedNumber(Integer.parseInt(request.getUsername().substring(3)), 10);
 
         if (backNumber == null) {
-            throw new SantanderValidationException("Invalid username (username can only have up to 10 characters)");
+            throw new SantanderValidationException("santander.sdk.error.line.generation.user.invalid.username.size");
         }
 
         String curricularYear = "";
@@ -233,7 +237,12 @@ public class SantanderLineGenerator {
         values.add(filler); //42
         values.add(endFlag); //43
 
-        cardPreviewBean.setRequestLine(santanderEntryValidator.generateLine(values));
+        try {
+            cardPreviewBean.setRequestLine(santanderEntryValidator.generateLine(values));
+        } catch (SantanderValidationException sve) {
+            LOGGER.error(String.format("Error generation line for user %s", request.getUsername()), sve);
+            throw new SantanderValidationException("santander.sdk.error.line.generation.failed");
+        }
         cardPreviewBean.setExpiryDate(expireDate_dateTime);
         cardPreviewBean.setCardName(cardName);
         cardPreviewBean.setIdentificationNumber(idNumber);
