@@ -1,0 +1,12 @@
+language: java
+jdk:
+  - openjdk8
+sudo: false
+
+cache:
+  directories:
+  - $HOME/.m2
+
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+script: mvn clean test -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false jspc:compile -B
