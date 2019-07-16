@@ -12,6 +12,7 @@ import org.fenixedu.commons.StringNormalizer;
 import org.fenixedu.santandersdk.dto.CardPreviewBean;
 import org.fenixedu.santandersdk.dto.CreateRegisterRequest;
 import org.fenixedu.santandersdk.dto.PickupAddress;
+import org.fenixedu.santandersdk.exception.SantanderMissingInformationException;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -81,7 +82,7 @@ public class SantanderLineGenerator {
 
         if (!errors.isEmpty()) {
             String errors_message = String.join("\n", errors);
-            throw new SantanderValidationException(errors_message);
+            throw new SantanderMissingInformationException(errors_message);
         }
 
         CardPreviewBean cardPreviewBean = new CardPreviewBean();
@@ -104,7 +105,7 @@ public class SantanderLineGenerator {
         PickupAddress pickupAddress = request.getPickupAddress();
 
         if (pickupAddress == null) {
-            throw new SantanderValidationException("santander.sdk.error.line.generation.user.has.no.current.campus");
+            throw new SantanderMissingInformationException("santander.sdk.error.line.generation.user.has.no.current.campus");
         }
 
         String address1 = pickupAddress.getAddress1();
@@ -142,7 +143,7 @@ public class SantanderLineGenerator {
 
         String expireData_AAMM = expireDate_dateTime.toString("yy") + expireDate_dateTime.toString("MM");
 
-        String templateCode = ""; //TODO
+        String templateCode = "";
 
         String actionCode = request.getAction().name();
 
@@ -150,43 +151,43 @@ public class SantanderLineGenerator {
 
         String roleDesc = getRoleDescripriton(role);
 
-        String idDocumentType = "0"; // TODO
+        String idDocumentType = "0";
 
-        String checkDigit = ""; // TODO
+        String checkDigit = "";
 
-        String cardType = "00"; // TODO
+        String cardType = "00";
 
-        String expedictionCode = "00"; // TODO
+        String expedictionCode = "00";
 
-        String detourAdress1 = ""; // TODO
+        String detourAdress1 = "";
 
-        String detourAdress2 = ""; // TODO
+        String detourAdress2 = "";
 
-        String detourAdress3 = ""; // TODO
+        String detourAdress3 = "";
 
-        String detourZipCode = ""; // TODO
+        String detourZipCode = "";
 
-        String detourTown = ""; // TODO
+        String detourTown = "";
 
-        String aditionalData = "1"; // TODO
+        String aditionalData = "1";
 
         String cardName = cardNames[0].toUpperCase() + " " + cardNames[1].toUpperCase();
 
-        String email = ""; // TODO
+        String email = "";
 
-        String phone = ""; // TODO
+        String phone = "";
 
-        String photoFlag = "0"; // TODO
+        String photoFlag = "0";
 
-        String photoRef = ""; // TODO
+        String photoRef = "";
 
-        String signatureFlag = "0"; // TODO
+        String signatureFlag = "0";
 
-        String signatureRef = ""; // TODO
+        String signatureRef = "";
 
-        String digCertificateFlag = "0"; // TODO
+        String digCertificateFlag = "0";
 
-        String digCertificateRef = ""; // TODO
+        String digCertificateRef = "";
 
         String filler = "";
 
