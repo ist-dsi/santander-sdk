@@ -31,11 +31,11 @@ public class CreateRegisterResponse {
     }
 
     public CreateRegisterResponse(TUIResponseData response) {
-        String status = response.getStatus() == null || response.getStatus().getValue() == null ? "" : response
-                .getStatus().getValue().trim();
+        String status =
+                response.getStatus() == null || response.getStatus().getValue() == null ? "" : response.getStatus().getValue()
+                        .trim();
 
-        ErrorType errorType =
-                !status.isEmpty() && !status.toLowerCase().equals("error") ? null : ErrorType.REQUEST_REFUSED;
+        ErrorType errorType = !status.isEmpty() && !status.toLowerCase().equals("error") ? null : ErrorType.REQUEST_REFUSED;
 
         setErrorType(errorType);
 
@@ -48,7 +48,8 @@ public class CreateRegisterResponse {
         }
     }
 
-    public CreateRegisterResponse() {}
+    public CreateRegisterResponse() {
+    }
 
     public boolean wasRegisterSuccessful() {
         return errorType == null;
