@@ -3,7 +3,6 @@ package org.fenixedu.santandersdk.dto;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -21,7 +20,7 @@ public class CreateRegisterRequest {
     private byte[] photo;
     private RegisterAction action;
     private PickupAddress pickupAddress;
-    
+
     public CreateRegisterRequest() {
     }
 

@@ -54,7 +54,8 @@ public class GetRegisterResponse {
                 .isNullOrEmpty(registerData.getSerialNumber().getValue()) ? null : registerData.getSerialNumber().getValue();
     }
 
-    public GetRegisterResponse() {}
+    public GetRegisterResponse() {
+    }
 
     public GetRegisterStatus getStatus() {
         return status;

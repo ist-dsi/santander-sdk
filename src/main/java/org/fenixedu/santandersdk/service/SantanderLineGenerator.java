@@ -95,7 +95,7 @@ public class SantanderLineGenerator {
 
         String[] names = harvestNames(request.getName());
         String[] cardNames = normalizeCardName(names);
-        
+
         String name = names[0];
         String surname = names[1];
         String middleNames = names[2];
@@ -255,17 +255,17 @@ public class SantanderLineGenerator {
 
     private String getRoleCode(String role) {
         switch (role) {
-        case "STUDENT":
-            return "01";
+            case "STUDENT":
+                return "01";
 
-        case "TEACHER":
-            return "02";
+            case "TEACHER":
+                return "02";
 
-        case "EMPLOYEE":
-            return "03";
+            case "EMPLOYEE":
+                return "03";
 
-        default:
-            return "99";
+            default:
+                return "99";
         }
     }
 
@@ -305,18 +305,18 @@ public class SantanderLineGenerator {
 
     private String getRoleDescripriton(String role) {
         switch (role) {
-        case "STUDENT":
-            return "Estudante/Student";
-        case "TEACHER":
-            return "Docente/Faculty";
-        case "EMPLOYEE":
-            return "Funcionario/Staff";
-        case "RESEARCHER":
-            return "Invest./Researcher";
-        case "GRANT_OWNER":
-            return "Bolseiro/Grant Owner";
-        default:
-            return "00";
+            case "STUDENT":
+                return "Estudante/Student";
+            case "TEACHER":
+                return "Docente/Faculty";
+            case "EMPLOYEE":
+                return "Funcionario/Staff";
+            case "RESEARCHER":
+                return "Invest./Researcher";
+            case "GRANT_OWNER":
+                return "Bolseiro/Grant Owner";
+            default:
+                return "00";
         }
     }
 
@@ -327,5 +327,5 @@ public class SantanderLineGenerator {
         String format = "%0" + size + "d";
         return String.format(format, number);
     }
-    
+
 }

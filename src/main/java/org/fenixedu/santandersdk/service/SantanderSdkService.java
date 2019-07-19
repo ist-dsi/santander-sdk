@@ -29,7 +29,6 @@ import pt.sibscartoes.portal.wcf.tui.dto.TUIResponseData;
 import pt.sibscartoes.portal.wcf.tui.dto.TuiPhotoRegisterData;
 import pt.sibscartoes.portal.wcf.tui.dto.TuiSignatureRegisterData;
 
-
 @Service
 public class SantanderSdkService {
 
@@ -79,12 +78,9 @@ public class SantanderSdkService {
     }
 
     private TuiPhotoRegisterData createPhoto(byte[] photoContents) {
-        final QName FILE_NAME =
-                new QName(NAMESPACE_URI, "FileName");
-        final QName FILE_EXTENSION =
-                new QName(NAMESPACE_URI, "Extension");
-        final QName FILE_CONTENTS =
-                new QName(NAMESPACE_URI, "FileContents");
+        final QName FILE_NAME = new QName(NAMESPACE_URI, "FileName");
+        final QName FILE_EXTENSION = new QName(NAMESPACE_URI, "Extension");
+        final QName FILE_CONTENTS = new QName(NAMESPACE_URI, "FileContents");
         final QName FILE_SIZE = new QName(NAMESPACE_URI, "Size");
 
         final String EXTENSION = ".jpeg";
@@ -101,8 +97,8 @@ public class SantanderSdkService {
     private <T> T initPort(Class<T> serviceType, String endpoint) {
         JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
         factory.setServiceClass(serviceType);
-        factory.setAddress(String.format(SantanderSdkSpringConfiguration.getConfiguration().sibsWebServiceAddress() + "/%s.svc",
-                endpoint));
+        factory.setAddress(
+                String.format(SantanderSdkSpringConfiguration.getConfiguration().sibsWebServiceAddress() + "/%s.svc", endpoint));
         factory.setBindingId("http://schemas.xmlsoap.org/wsdl/soap12/");
         factory.getFeatures().add(new WSAddressingFeature());
 
