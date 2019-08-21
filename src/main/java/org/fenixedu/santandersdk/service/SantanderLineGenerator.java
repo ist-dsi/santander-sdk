@@ -3,7 +3,6 @@ package org.fenixedu.santandersdk.service;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,16 +43,14 @@ public class SantanderLineGenerator {
         charReplacementMap.put("I", "I");
     }
 
-    private String[] normalizeCardName(final String[] names) {
-        return Arrays.stream(names).map(name -> {
-            if (!latin1CharsetEncoder.canEncode(name)) {
-                for (final String replacementChar : charReplacementMap.keySet()) {
-                    name = name.replaceAll(replacementChar, charReplacementMap.get(replacementChar));
-                }
-                return StringNormalizer.normalizePreservingCapitalizedLetters(name);
+    private String normalizeCardName(String name) {
+        if (!latin1CharsetEncoder.canEncode(name)) {
+            for (final String replacementChar : charReplacementMap.keySet()) {
+                name = name.replaceAll(replacementChar, charReplacementMap.get(replacementChar));
             }
-            return name;
-        }).toArray(String[]::new);
+            return StringNormalizer.normalizePreservingCapitalizedLetters(name);
+        }
+        return name;
     }
 
     public CardPreviewBean generateLine(CreateRegisterRequest request) throws SantanderValidationException {
@@ -64,7 +61,11 @@ public class SantanderLineGenerator {
             errors.add("santander.sdk.error.line.generation.missing.username");
         }
 
-        if (Strings.isNullOrEmpty(request.getName())) {
+        if (Strings.isNullOrEmpty(request.getCardName())) {
+            errors.add("santander.sdk.error.line.generation.missing.name");
+        }
+
+        if (Strings.isNullOrEmpty(request.getFullName())) {
             errors.add("santander.sdk.error.line.generation.missing.name");
         }
 
@@ -93,8 +94,8 @@ public class SantanderLineGenerator {
 
         String idNumber = request.getUsername();
 
-        String[] names = harvestNames(request.getName());
-        String[] cardNames = normalizeCardName(names);
+        String[] names = harvestNames(request.getFullName());
+        String cardName = normalizeCardName(request.getCardName()).toUpperCase();
 
         String name = names[0];
         String surname = names[1];
@@ -170,8 +171,6 @@ public class SantanderLineGenerator {
         String detourTown = "";
 
         String aditionalData = "1";
-
-        String cardName = cardNames[0].toUpperCase() + " " + cardNames[1].toUpperCase();
 
         String email = "";
 
@@ -271,21 +270,24 @@ public class SantanderLineGenerator {
 
     private String[] harvestNames(String name) {
         String[] result = new String[3];
-        String purgedName = purgeString(name); //Remove special characters
-        String cleanedName = Strings.nullToEmpty(purgedName).trim();
-        String[] names = cleanedName.split(" ");
+        String purgedName = cleanNames(name);
+        String[] names = purgedName.split(" ");
         result[0] = names[0].length() > 15 ? names[0].substring(0, 15) : names[0];
         result[1] = names[names.length - 1].length() > 15 ? names[names.length - 1].substring(0, 15) : names[names.length - 1];
-        String midNames = names.length > 2 ? names[1] : "";
+        StringBuilder midNames = new StringBuilder(names.length > 2 ? names[1] : "");
         for (int i = 2; i < (names.length - 1); i++) {
             if (midNames.length() + names[i].length() + 1 > 40) {
                 break;
             }
-            midNames += " ";
-            midNames += names[i];
+            midNames.append(" ");
+            midNames.append(names[i]);
         }
-        result[2] = midNames;
+        result[2] = midNames.toString();
         return result;
+    }
+
+    private String cleanNames(String name) {
+        return purgeString(name).trim();
     }
 
     private String purgeString(final String name) {
