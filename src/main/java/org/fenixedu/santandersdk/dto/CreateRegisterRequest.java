@@ -13,7 +13,8 @@ import org.imgscalr.Scalr.Mode;
 public class CreateRegisterRequest {
 
     private String username;
-    private String name;
+    private String cardName;
+    private String fullName;
     private String role;
     private String campus;
     private String departmentAcronym;
@@ -32,12 +33,12 @@ public class CreateRegisterRequest {
         this.username = username;
     }
 
-    public String getName() {
-        return name;
+    public String getCardName() {
+        return cardName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCardName(String cardName) {
+        this.cardName = cardName;
     }
 
     public String getRole() {
@@ -94,6 +95,14 @@ public class CreateRegisterRequest {
         final BufferedImage adjustedImage = transformZoom(image, 9, 10);
         final BufferedImage avatar = Scalr.resize(adjustedImage, Method.QUALITY, Mode.FIT_EXACT, 180, 200);
         return writeImageAsBytes(avatar, "jpg");
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     private BufferedImage transformZoom(final BufferedImage source, int xRatio, int yRatio) {
