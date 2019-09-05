@@ -157,19 +157,19 @@ public class SantanderLineGenerator {
 
         String cardType = "00";
 
-        String expedictionCode = "00";
+        String expeditionCode = "00";
 
-        String detourAdress1 = "";
+        String detourAddress1 = "";
 
-        String detourAdress2 = "";
+        String detourAddress2 = "";
 
-        String detourAdress3 = "";
+        String detourAddress3 = "";
 
         String detourZipCode = "";
 
         String detourTown = "";
 
-        String aditionalData = "1";
+        String additionalData = "1";
 
         String cardName = cardNames[0].toUpperCase() + " " + cardNames[1].toUpperCase();
 
@@ -177,7 +177,7 @@ public class SantanderLineGenerator {
 
         String phone = "";
 
-        String photoFlag = "0";
+        String photoFlag = "1";
 
         String photoRef = "";
 
@@ -219,13 +219,13 @@ public class SantanderLineGenerator {
         values.add(idDocumentType); //23
         values.add(checkDigit); //24
         values.add(cardType); //25
-        values.add(expedictionCode); //26
-        values.add(detourAdress1); //27
-        values.add(detourAdress2); //28
-        values.add(detourAdress3); //29
+        values.add(expeditionCode); //26
+        values.add(detourAddress1); //27
+        values.add(detourAddress2); //28
+        values.add(detourAddress3); //29
         values.add(detourZipCode); //30
         values.add(detourTown); //31
-        values.add(aditionalData); //32
+        values.add(additionalData); //32
         values.add(cardName); //33
         values.add(email); //34
         values.add(phone); //35
