@@ -34,23 +34,21 @@ public class SantanderLineGenerator {
     @Autowired
     public SantanderLineGenerator(SantanderEntryValidator santanderEntryValidator) {
         this.santanderEntryValidator = santanderEntryValidator;
-        charReplacementMap.put("ł", "l");
-        charReplacementMap.put("Ł", "L");
-        charReplacementMap.put("Đ", "D");
-        charReplacementMap.put("đ", "d");
-        charReplacementMap.put("æ", "ae");
-        charReplacementMap.put("ı", "i");
-        charReplacementMap.put("I", "I");
+        fillCharReplacementMap();
     }
 
     private String normalizeCardName(String name) {
-        if (!latin1CharsetEncoder.canEncode(name)) {
+        if (!latin1CharsetEncoder.canEncode(name) || nameContainsCharReplacements(name)) {
             for (final String replacementChar : charReplacementMap.keySet()) {
                 name = name.replaceAll(replacementChar, charReplacementMap.get(replacementChar));
             }
             return StringNormalizer.normalizePreservingCapitalizedLetters(name);
         }
         return name;
+    }
+
+    private boolean nameContainsCharReplacements(String name) {
+        return charReplacementMap.keySet().stream().anyMatch(name::contains);
     }
 
     public CardPreviewBean generateLine(CreateRegisterRequest request) throws SantanderValidationException {
@@ -328,6 +326,54 @@ public class SantanderLineGenerator {
         }
         String format = "%0" + size + "d";
         return String.format(format, number);
+    }
+
+    private void fillCharReplacementMap() {
+        charReplacementMap.put("ł", "l");
+        charReplacementMap.put("Ł", "L");
+        charReplacementMap.put("Đ", "D");
+        charReplacementMap.put("đ", "d");
+        charReplacementMap.put("æ", "ae");
+        charReplacementMap.put("ı", "i");
+        charReplacementMap.put("I", "I");
+        charReplacementMap.put("Ñ", "N");
+        charReplacementMap.put("ñ", "n");
+        charReplacementMap.put("ï", "i");
+        charReplacementMap.put("Ï", "I");
+        charReplacementMap.put("ø", "o");
+        charReplacementMap.put("Ø", "O");
+        charReplacementMap.put("ö", "o");
+        charReplacementMap.put("Ö", "O");
+        charReplacementMap.put("š", "s");
+        charReplacementMap.put("Š", "S");
+        charReplacementMap.put("ť", "t");
+        charReplacementMap.put("Ť", "T");
+        charReplacementMap.put("ć", "c");
+        charReplacementMap.put("Ć", "C");
+        charReplacementMap.put("ő", "o");
+        charReplacementMap.put("Ő", "O");
+        charReplacementMap.put("č", "c");
+        charReplacementMap.put("Č", "C");
+        charReplacementMap.put("ń", "n");
+        charReplacementMap.put("Ń", "N");
+        charReplacementMap.put("ż", "z");
+        charReplacementMap.put("Ż", "Z");
+        charReplacementMap.put("ž", "z");
+        charReplacementMap.put("Ž", "Z");
+        charReplacementMap.put("ů", "u");
+        charReplacementMap.put("Ů", "U");
+        charReplacementMap.put("ś", "s");
+        charReplacementMap.put("Ś", "S");
+        charReplacementMap.put("ľ", "l");
+        charReplacementMap.put("Ľ", "L");
+        charReplacementMap.put("ę", "e");
+        charReplacementMap.put("Ę", "E");
+        charReplacementMap.put("ğ", "g");
+        charReplacementMap.put("Ğ", "G");
+        charReplacementMap.put("ü", "u");
+        charReplacementMap.put("Ü", "U");
+        charReplacementMap.put("ş", "s");
+        charReplacementMap.put("Ş", "S");
     }
 
 }
