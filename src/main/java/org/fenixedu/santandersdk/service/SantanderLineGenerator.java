@@ -2,6 +2,7 @@ package org.fenixedu.santandersdk.service;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,7 @@ public class SantanderLineGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SantanderLineGenerator.class);
     private final Map<String, String> charReplacementMap = new HashMap<>();
-    private final CharsetEncoder latin1CharsetEncoder = Charset.forName("ISO-8859-1").newEncoder();
+    private final CharsetEncoder latin1CharsetEncoder = StandardCharsets.ISO_8859_1.newEncoder();
 
     private SantanderEntryValidator santanderEntryValidator;
 
@@ -94,6 +95,7 @@ public class SantanderLineGenerator {
 
         String[] names = harvestNames(request.getFullName());
         String cardName = normalizeCardName(request.getCardName()).toUpperCase();
+        String encodedCardName = new String(cardName.getBytes(), Charset.forName("Windows-1252"));
 
         String name = names[0];
         String surname = names[1];
@@ -223,7 +225,7 @@ public class SantanderLineGenerator {
         values.add(detourZipCode); //30
         values.add(detourTown); //31
         values.add(additionalData); //32
-        values.add(cardName); //33
+        values.add(encodedCardName); //33
         values.add(email); //34
         values.add(phone); //35
         values.add(photoFlag); //36
@@ -374,7 +376,8 @@ public class SantanderLineGenerator {
         charReplacementMap.put("Ü", "U");
         charReplacementMap.put("ş", "s");
         charReplacementMap.put("Ş", "S");
-        charReplacementMap.put("'", " ");
+        charReplacementMap.put("Ä", "A");
+        charReplacementMap.put("ä", "a");
     }
 
 }
