@@ -16,7 +16,7 @@
     <name>Santander SDK</name>
 
     <properties>
-        <version.org.fenixedu.bennu>6.3.1</version.org.fenixedu.bennu>
+        <version.org.fenixedu.bennu>6.5.0</version.org.fenixedu.bennu>
         <version.org.apache.cxf>3.1.10</version.org.apache.cxf>
         <version.org.imgscalr.imgscalr-lib>4.2</version.org.imgscalr.imgscalr-lib>
     </properties>

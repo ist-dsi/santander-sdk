@@ -2,6 +2,7 @@ package org.fenixedu.santandersdk.service;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,7 @@ public class SantanderLineGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SantanderLineGenerator.class);
     private final Map<String, String> charReplacementMap = new HashMap<>();
-    private final CharsetEncoder latin1CharsetEncoder = Charset.forName("ISO-8859-1").newEncoder();
+    private final CharsetEncoder latin1CharsetEncoder = StandardCharsets.ISO_8859_1.newEncoder();
 
     private SantanderEntryValidator santanderEntryValidator;
 
@@ -375,7 +376,8 @@ public class SantanderLineGenerator {
         charReplacementMap.put("Ü", "U");
         charReplacementMap.put("ş", "s");
         charReplacementMap.put("Ş", "S");
-        charReplacementMap.put("'", " ");
+        charReplacementMap.put("Ä", "A");
+        charReplacementMap.put("ä", "a");
     }
 
 }
