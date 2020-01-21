@@ -94,6 +94,7 @@ public class SantanderLineGenerator {
 
         String[] names = harvestNames(request.getFullName());
         String cardName = normalizeCardName(request.getCardName()).toUpperCase();
+        String encodedCardName = new String(cardName.getBytes(Charset.forName("Windows-1252")), Charset.forName("Windows-1252"));
 
         String name = names[0];
         String surname = names[1];
@@ -223,7 +224,7 @@ public class SantanderLineGenerator {
         values.add(detourZipCode); //30
         values.add(detourTown); //31
         values.add(additionalData); //32
-        values.add(cardName); //33
+        values.add(encodedCardName); //33
         values.add(email); //34
         values.add(phone); //35
         values.add(photoFlag); //36
@@ -242,7 +243,7 @@ public class SantanderLineGenerator {
             throw new SantanderValidationException("santander.sdk.error.line.generation.failed");
         }
         cardPreviewBean.setExpiryDate(expireDate_dateTime);
-        cardPreviewBean.setCardName(cardName);
+        cardPreviewBean.setCardName(encodedCardName);
         cardPreviewBean.setIdentificationNumber(idNumber);
         cardPreviewBean.setPhoto(request.getPhoto());
         cardPreviewBean.setRole(roleDesc);
