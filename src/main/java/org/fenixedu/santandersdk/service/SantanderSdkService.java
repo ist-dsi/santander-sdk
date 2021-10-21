@@ -19,6 +19,8 @@ import org.fenixedu.santandersdk.dto.CreateRegisterResponse;
 import org.fenixedu.santandersdk.dto.CreateRegisterResponse.ErrorType;
 import org.fenixedu.santandersdk.dto.GetRegisterResponse;
 import org.fenixedu.santandersdk.exception.SantanderValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,8 @@ import pt.sibscartoes.portal.wcf.tui.dto.TuiSignatureRegisterData;
 
 @Service
 public class SantanderSdkService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SantanderSdkService.class);
 
     private final SantanderLineGenerator santanderLineGenerator;
 
@@ -66,6 +70,7 @@ public class SantanderSdkService {
             final TUIResponseData responseData = port.saveRegister(tuiEntry, photoRegisterData, signature);
             return new CreateRegisterResponse(responseData);
         } catch (final WebServiceException e) {
+            LOGGER.error(String.format("An webservice error happened while trying to create santander register. -> %s", e.getMessage()), e);
             return new CreateRegisterResponse(ErrorType.SANTANDER_COMMUNICATION, "santander communication error",
                     e.getMessage());
         }
