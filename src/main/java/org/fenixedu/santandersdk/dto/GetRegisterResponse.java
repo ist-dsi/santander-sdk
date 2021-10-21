@@ -14,7 +14,7 @@ public class GetRegisterResponse {
     private String mifare;
     private String serialNumber;
 
-    public GetRegisterResponse(RegisterData registerData) {
+    public GetRegisterResponse(final RegisterData registerData) {
         String status = registerData.getStatus().getValue();
 
         if (status == null) {
@@ -26,7 +26,7 @@ public class GetRegisterResponse {
         DateTime expiryDate = null;
 
         if (registerData.getExpiryDate() != null) {
-            String expiryDateString = registerData.getExpiryDate().getValue();
+            final String expiryDateString = registerData.getExpiryDate().getValue();
 
             if (expiryDateString != null) {
                 expiryDate = DateTime.parse(expiryDateString, DateTimeFormat.forPattern("dd-MM-yyyy"));
@@ -38,7 +38,7 @@ public class GetRegisterResponse {
         DateTime expeditionDate = null;
 
         if (registerData.getExpeditionDate() != null) {
-            String expeditionDateString = registerData.getExpeditionDate().getValue();
+            final String expeditionDateString = registerData.getExpeditionDate().getValue();
 
             if (expeditionDateString != null) {
                 expeditionDate = DateTime.parse(expeditionDateString, DateTimeFormat.forPattern("dd-MM-yyyy"));
@@ -61,7 +61,7 @@ public class GetRegisterResponse {
         return status;
     }
 
-    public void setStatus(GetRegisterStatus status) {
+    public void setStatus(final GetRegisterStatus status) {
         this.status = status;
     }
 
@@ -69,7 +69,7 @@ public class GetRegisterResponse {
         return expiryDate;
     }
 
-    public void setExpiryDate(DateTime expiryDate) {
+    public void setExpiryDate(final DateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
 
@@ -77,7 +77,7 @@ public class GetRegisterResponse {
         return expeditionDate;
     }
 
-    public void setExpeditionDate(DateTime expeditionDate) {
+    public void setExpeditionDate(final DateTime expeditionDate) {
         this.expeditionDate = expeditionDate;
     }
 
@@ -85,7 +85,7 @@ public class GetRegisterResponse {
         return mifare;
     }
 
-    public void setMifare(String mifare) {
+    public void setMifare(final String mifare) {
         this.mifare = mifare;
     }
 
@@ -93,7 +93,7 @@ public class GetRegisterResponse {
         return serialNumber;
     }
 
-    public void setSerialNumber(String serialNumber) {
+    public void setSerialNumber(final String serialNumber) {
         this.serialNumber = serialNumber;
     }
 }

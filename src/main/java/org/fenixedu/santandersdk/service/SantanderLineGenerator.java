@@ -30,10 +30,10 @@ public class SantanderLineGenerator {
     private final Map<String, String> charReplacementMap = new HashMap<>();
     private final CharsetEncoder latin1CharsetEncoder = StandardCharsets.ISO_8859_1.newEncoder();
 
-    private SantanderEntryValidator santanderEntryValidator;
+    private final SantanderEntryValidator santanderEntryValidator;
 
     @Autowired
-    public SantanderLineGenerator(SantanderEntryValidator santanderEntryValidator) {
+    public SantanderLineGenerator(final SantanderEntryValidator santanderEntryValidator) {
         this.santanderEntryValidator = santanderEntryValidator;
         fillCharReplacementMap();
     }
@@ -48,13 +48,13 @@ public class SantanderLineGenerator {
         return name;
     }
 
-    private boolean nameContainsCharReplacements(String name) {
+    private boolean nameContainsCharReplacements(final String name) {
         return charReplacementMap.keySet().stream().anyMatch(name::contains);
     }
 
-    public CardPreviewBean generateLine(CreateRegisterRequest request) throws SantanderValidationException {
-        List<String> errors = new ArrayList<>();
-        String role = request.getRole();
+    public CardPreviewBean generateLine(final CreateRegisterRequest request) throws SantanderValidationException {
+        final List<String> errors = new ArrayList<>();
+        final String role = request.getRole();
 
         if (Strings.isNullOrEmpty(request.getUsername())) {
             errors.add("santander.sdk.error.line.generation.missing.username");
@@ -81,116 +81,116 @@ public class SantanderLineGenerator {
         }
 
         if (!errors.isEmpty()) {
-            String errors_message = String.join("\n", errors);
-            throw new SantanderMissingInformationException(errors_message);
+            final String errorsMessage = String.join("\n", errors);
+            throw new SantanderMissingInformationException(errorsMessage);
         }
 
-        CardPreviewBean cardPreviewBean = new CardPreviewBean();
+        final CardPreviewBean cardPreviewBean = new CardPreviewBean();
 
-        List<String> values = new ArrayList<>();
+        final List<String> values = new ArrayList<>();
 
-        String recordType = "2";
+        final String recordType = "2";
 
-        String idNumber = request.getUsername();
+        final String idNumber = request.getUsername();
 
-        String[] names = harvestNames(request.getFullName());
-        String cardName = normalizeCardName(request.getCardName()).toUpperCase();
-        String encodedCardName = new String(cardName.getBytes(Charset.forName("Windows-1252")), Charset.forName("Windows-1252"));
+        final String[] names = harvestNames(request.getFullName());
+        final String cardName = normalizeCardName(request.getCardName()).toUpperCase();
+        final String encodedCardName = new String(cardName.getBytes(Charset.forName("Windows-1252")), Charset.forName("Windows-1252"));
 
-        String name = names[0];
-        String surname = names[1];
-        String middleNames = names[2];
+        final String name = names[0];
+        final String surname = names[1];
+        final String middleNames = names[2];
 
-        String degreeCode = "";
+        final String degreeCode = "";
 
-        PickupAddress pickupAddress = request.getPickupAddress();
+        final PickupAddress pickupAddress = request.getPickupAddress();
 
         if (pickupAddress == null) {
             throw new SantanderMissingInformationException("santander.sdk.error.line.generation.user.has.no.current.campus");
         }
 
-        String address1 = pickupAddress.getAddress1();
-        String address2 = pickupAddress.getAddress2();
+        final String address1 = pickupAddress.getAddress1();
+        final String address2 = pickupAddress.getAddress2();
 
-        String zipCode = pickupAddress.getZipCode();
-        String town = pickupAddress.getZipDescriptive();
+        final String zipCode = pickupAddress.getZipCode();
+        final String town = pickupAddress.getZipDescriptive();
 
-        String homeCountry = "";
+        final String homeCountry = "";
 
-        String residenceCountry = request.getUsername(); // As stipulated this field will carry the istId instead.
+        final String residenceCountry = request.getUsername(); // As stipulated this field will carry the istId instead.
 
-        DateTime now = DateTime.now();
+        final DateTime now = DateTime.now();
 
-        DateTime expireDate_dateTime =
+        final DateTime expireDate_dateTime =
                 now.plusYears(3).dayOfMonth().withMaximumValue().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
 
-        String expireDate = now.toString("yyyy") + "/" + expireDate_dateTime.toString("yyyy");
+        final String expireDate = now.toString("yyyy") + "/" + expireDate_dateTime.toString("yyyy");
 
-        String backNumber = makeZeroPaddedNumber(Integer.parseInt(request.getUsername().substring(3)), 10);
+        final String backNumber = makeZeroPaddedNumber(Integer.parseInt(request.getUsername().substring(3)), 10);
 
         if (backNumber == null) {
             throw new SantanderValidationException("santander.sdk.error.line.generation.user.invalid.username.size");
         }
 
-        String curricularYear = "";
-        String executionYear_field = "";
+        final String curricularYear = "";
+        final String executionYear_field = "";
 
         String unit = "";
         if (role.equals("TEACHER") && !Strings.isNullOrEmpty(request.getDepartmentAcronym())) {
             unit = request.getDepartmentAcronym();
         }
 
-        String accessControl = "";
+        final String accessControl = "";
 
-        String expireData_AAMM = expireDate_dateTime.toString("yy") + expireDate_dateTime.toString("MM");
+        final String expireData_AAMM = expireDate_dateTime.toString("yy") + expireDate_dateTime.toString("MM");
 
-        String templateCode = "";
+        final String templateCode = "";
 
-        String actionCode = request.getAction().name();
+        final String actionCode = request.getAction().name();
 
-        String roleCode = getRoleCode(role);
+        final String roleCode = getRoleCode(role);
 
-        String roleDesc = getRoleDescripriton(role);
+        final String roleDesc = getRoleDescription(role);
 
-        String idDocumentType = "0";
+        final String idDocumentType = "0";
 
-        String checkDigit = "";
+        final String checkDigit = "";
 
-        String cardType = "00";
+        final String cardType = "00";
 
-        String expeditionCode = "00";
+        final String expeditionCode = "00";
 
-        String detourAddress1 = "";
+        final String detourAddress1 = "";
 
-        String detourAddress2 = "";
+        final String detourAddress2 = "";
 
-        String detourAddress3 = "";
+        final String detourAddress3 = "";
 
-        String detourZipCode = "";
+        final String detourZipCode = "";
 
-        String detourTown = "";
+        final String detourTown = "";
 
-        String additionalData = "1";
+        final String additionalData = "1";
 
-        String email = "";
+        final String email = "";
 
-        String phone = "";
+        final String phone = "";
 
-        String photoFlag = "1";
+        final String photoFlag = "1";
 
-        String photoRef = "";
+        final String photoRef = "";
 
-        String signatureFlag = "0";
+        final String signatureFlag = "0";
 
-        String signatureRef = "";
+        final String signatureRef = "";
 
-        String digCertificateFlag = "0";
+        final String digCertificateFlag = "0";
 
-        String digCertificateRef = "";
+        final String digCertificateRef = "";
 
-        String filler = "";
+        final String filler = "";
 
-        String endFlag = "1";
+        final String endFlag = "1";
 
         values.add(recordType); //0
         values.add(idNumber); //1
@@ -239,7 +239,7 @@ public class SantanderLineGenerator {
 
         try {
             cardPreviewBean.setRequestLine(santanderEntryValidator.generateLine(values));
-        } catch (SantanderValidationException sve) {
+        } catch (final SantanderValidationException sve) {
             LOGGER.error(String.format("Error generation line for user %s", request.getUsername()), sve);
             throw new SantanderValidationException("santander.sdk.error.line.generation.failed");
         }
@@ -252,7 +252,7 @@ public class SantanderLineGenerator {
         return cardPreviewBean;
     }
 
-    private String getRoleCode(String role) {
+    private String getRoleCode(final String role) {
         switch (role) {
             case "STUDENT":
                 return "01";
@@ -268,13 +268,13 @@ public class SantanderLineGenerator {
         }
     }
 
-    private String[] harvestNames(String name) {
-        String[] result = new String[3];
-        String purgedName = cleanNames(name);
-        String[] names = purgedName.split(" ");
+    private String[] harvestNames(final String name) {
+        final String[] result = new String[3];
+        final String purgedName = cleanNames(name);
+        final String[] names = purgedName.split(" ");
         result[0] = names[0].length() > 15 ? names[0].substring(0, 15) : names[0];
         result[1] = names[names.length - 1].length() > 15 ? names[names.length - 1].substring(0, 15) : names[names.length - 1];
-        StringBuilder midNames = new StringBuilder(names.length > 2 ? names[1] : "");
+        final StringBuilder midNames = new StringBuilder(names.length > 2 ? names[1] : "");
         for (int i = 2; i < (names.length - 1); i++) {
             if (midNames.length() + names[i].length() + 1 > 40) {
                 break;
@@ -286,7 +286,7 @@ public class SantanderLineGenerator {
         return result;
     }
 
-    private String cleanNames(String name) {
+    private String cleanNames(final String name) {
         return purgeString(name).trim();
     }
 
@@ -305,7 +305,7 @@ public class SantanderLineGenerator {
         return name;
     }
 
-    private String getRoleDescripriton(String role) {
+    private String getRoleDescription(final String role) {
         switch (role) {
             case "STUDENT":
                 return "Estudante/Student";
@@ -322,11 +322,11 @@ public class SantanderLineGenerator {
         }
     }
 
-    private String makeZeroPaddedNumber(int number, int size) {
+    private String makeZeroPaddedNumber(final int number, final int size) {
         if (String.valueOf(number).length() > size) {
             return null;
         }
-        String format = "%0" + size + "d";
+        final String format = "%0" + size + "d";
         return String.format(format, number);
     }
 

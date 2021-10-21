@@ -6,7 +6,7 @@ public class SantanderMissingInformationException extends SantanderValidationExc
         super();
     }
 
-    public SantanderMissingInformationException(String msg) {
+    public SantanderMissingInformationException(final String msg) {
         super(msg);
     }
 

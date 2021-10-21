@@ -14,21 +14,21 @@ import com.google.gson.JsonObject;
 @Service
 public class SantanderEntryValidator {
 
-    private class SantanderFieldValidator {
+    private static class SantanderFieldValidator {
 
-        private boolean required;
-        private boolean numeric;
-        private int size;
-        private String fieldName;
+        private final boolean required;
+        private final boolean numeric;
+        private final int size;
+        private final String fieldName;
 
-        public SantanderFieldValidator(String fieldName, boolean numeric, int size, boolean required) {
+        public SantanderFieldValidator(final String fieldName, final boolean numeric, final int size, final boolean required) {
             this.fieldName = fieldName;
             this.numeric = numeric;
             this.size = size;
             this.required = required;
         }
 
-        public void validate(String s) throws SantanderValidationException {
+        public void validate(final String s) throws SantanderValidationException {
             if (Strings.isNullOrEmpty(s)) {
                 if (isRequired()) {
                     throw new SantanderValidationException("property " + fieldName + " is missing");
@@ -38,19 +38,17 @@ public class SantanderEntryValidator {
             }
 
             if (s.length() > size) {
-                String template = "property %s (%s) has to many characters (max characters: %d)";
-                String error = String.format(template, fieldName, s, size);
+                final String error = String.format("property %s (%s) has to many characters (max characters: %d)", fieldName, s, size);
                 throw new SantanderValidationException(error);
             }
 
             if (isNumeric() && !StringUtils.isNumeric(s)) {
-                String template = "property %s (%s) can only contain numbers";
-                String error = String.format(template, fieldName, s);
+                final String error = String.format("property %s (%s) can only contain numbers", fieldName, s);
                 throw new SantanderValidationException(error);
             }
         }
 
-        public String getfieldName() {
+        public String getFieldName() {
             return fieldName;
         }
 
@@ -67,7 +65,7 @@ public class SantanderEntryValidator {
         }
     }
 
-    private List<SantanderFieldValidator> validators = new ArrayList<SantanderFieldValidator>() {
+    private final List<SantanderFieldValidator> validators = new ArrayList<SantanderFieldValidator>() {
         {
             add(new SantanderFieldValidator("record_type", true, 1, true)); // 0: record type
             add(new SantanderFieldValidator("id_number", false, 10, true)); // 1: id number
@@ -116,45 +114,48 @@ public class SantanderEntryValidator {
         }
     };
 
-    public String generateLine(List<String> values) throws SantanderValidationException {
-        List<String> errors = new ArrayList<>();
-        StringBuilder strBuilder = new StringBuilder(1500);
+    public String generateLine(final List<String> values) throws SantanderValidationException {
+        final List<String> errors = new ArrayList<>();
+        final StringBuilder strBuilder = new StringBuilder(1500);
         int i = 0;
 
-        for (String value : values) {
+        for (final String value : values) {
             try {
                 strBuilder.append(makeStringBlock(value, validators.get(i)));
-            } catch (SantanderValidationException sve) {
+            } catch (final SantanderValidationException sve) {
                 errors.add(sve.getMessage());
             }
             i++;
         }
 
         if (!errors.isEmpty()) {
-            String errors_message = Joiner.on("\n").join(errors);
-            throw new SantanderValidationException(errors_message);
+            final String errorsMessage = Joiner.on("\n").join(errors);
+            throw new SantanderValidationException(errorsMessage);
         }
 
         return strBuilder.toString();
     }
 
-    public JsonObject getRequestAsJson(String line) {
-        JsonObject result = new JsonObject();
+    public JsonObject getRequestAsJson(final String line) {
+        final JsonObject result = new JsonObject();
         int offset = 0;
-        for (SantanderFieldValidator validator : validators) {
-            result.addProperty(validator.getfieldName(), getValue(line, offset).trim());
+        for (final SantanderFieldValidator validator : validators) {
+            result.addProperty(validator.getFieldName(), getValue(line, offset).trim());
             offset++;
         }
         return result;
     }
 
-    private String makeStringBlock(String value, SantanderFieldValidator validator) throws SantanderValidationException {
+    private String makeStringBlock(final String value, final SantanderFieldValidator validator)
+                                   throws SantanderValidationException {
+        // Validate value.
         validator.validate(value);
 
-        int size = validator.getSize();
-        int fillerLength = size - value.length();
+        final int size = validator.getSize();
+        final int fillerLength = size - value.length();
+        final StringBuilder blockBuilder = new StringBuilder(size);
 
-        StringBuilder blockBuilder = new StringBuilder(size);
+        // Append value to block string builder.
         blockBuilder.append(value);
 
         for (int i = 0; i < fillerLength; i++) {
@@ -164,16 +165,14 @@ public class SantanderEntryValidator {
         return blockBuilder.toString();
     }
 
-    public String getValue(String line, int fieldIndex) {
+    public String getValue(final String line, final int fieldIndex) {
         int i = 0;
         int beginIndex = 0;
-
         for (; i < fieldIndex; i++) {
-            SantanderFieldValidator validator = validators.get(i);
+            final SantanderFieldValidator validator = validators.get(i);
             beginIndex += validator.getSize();
         }
-        int endIndex = validators.get(i).getSize() + beginIndex;
-
+        final int endIndex = validators.get(i).getSize() + beginIndex;
         return line.substring(beginIndex, endIndex).trim();
     }
 }

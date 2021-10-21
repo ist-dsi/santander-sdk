@@ -32,10 +32,10 @@ import pt.sibscartoes.portal.wcf.tui.dto.TuiSignatureRegisterData;
 @Service
 public class SantanderSdkService {
 
-    private SantanderLineGenerator santanderLineGenerator;
+    private final SantanderLineGenerator santanderLineGenerator;
 
     @Autowired
-    public SantanderSdkService(SantanderLineGenerator santanderLineGenerator) {
+    public SantanderSdkService(final SantanderLineGenerator santanderLineGenerator) {
         this.santanderLineGenerator = santanderLineGenerator;
     }
 
@@ -45,39 +45,33 @@ public class SantanderSdkService {
     private final static int CONNECTION_TIMEOUT = 50000;
     private final static int RECEIVE_TIMEOUT = 100000;
 
-    public GetRegisterResponse getRegister(String userName) {
-        IRegisterInfoService port = initPort(IRegisterInfoService.class, "RegisterInfoService");
-
-        RegisterData registerData = port.getRegister(userName);
-
+    public GetRegisterResponse getRegister(final String userName) {
+        final IRegisterInfoService port = initPort(IRegisterInfoService.class, "RegisterInfoService");
+        final RegisterData registerData = port.getRegister(userName);
         return new GetRegisterResponse(registerData);
     }
 
-    public CardPreviewBean generateCardRequest(CreateRegisterRequest request) throws SantanderValidationException {
+    public CardPreviewBean generateCardRequest(final CreateRegisterRequest request) throws SantanderValidationException {
         return santanderLineGenerator.generateLine(request);
     }
 
-    public CreateRegisterResponse createRegister(CardPreviewBean cardPreviewBean) {
-        String tuiEntry = cardPreviewBean.getRequestLine();
-        TuiPhotoRegisterData photoRegisterData = createPhoto(cardPreviewBean.getPhoto());
-        TuiSignatureRegisterData signature = new TuiSignatureRegisterData();
+    public CreateRegisterResponse createRegister(final CardPreviewBean cardPreviewBean) {
+        final String tuiEntry = cardPreviewBean.getRequestLine();
+        final TuiPhotoRegisterData photoRegisterData = createPhoto(cardPreviewBean.getPhoto());
+        final TuiSignatureRegisterData signature = new TuiSignatureRegisterData();
 
-        ITUIDetailService port = initPort(ITUIDetailService.class, "TUIDetailService");
+        final ITUIDetailService port = initPort(ITUIDetailService.class, "TUIDetailService");
 
-        TUIResponseData responseData;
         try {
-            responseData = port.saveRegister(tuiEntry, photoRegisterData, signature);
-        } catch (WebServiceException e) {
-            CreateRegisterResponse response =
-                    new CreateRegisterResponse(ErrorType.SANTANDER_COMMUNICATION, "santander communication error",
-                            e.getMessage());
-            return response;
+            final TUIResponseData responseData = port.saveRegister(tuiEntry, photoRegisterData, signature);
+            return new CreateRegisterResponse(responseData);
+        } catch (final WebServiceException e) {
+            return new CreateRegisterResponse(ErrorType.SANTANDER_COMMUNICATION, "santander communication error",
+                    e.getMessage());
         }
-
-        return new CreateRegisterResponse(responseData);
     }
 
-    private TuiPhotoRegisterData createPhoto(byte[] photoContents) {
+    private TuiPhotoRegisterData createPhoto(final byte[] photoContents) {
         final QName FILE_NAME = new QName(NAMESPACE_URI, "FileName");
         final QName FILE_EXTENSION = new QName(NAMESPACE_URI, "Extension");
         final QName FILE_CONTENTS = new QName(NAMESPACE_URI, "FileContents");
@@ -85,7 +79,7 @@ public class SantanderSdkService {
 
         final String EXTENSION = ".jpeg";
 
-        TuiPhotoRegisterData photo = new TuiPhotoRegisterData();
+        final TuiPhotoRegisterData photo = new TuiPhotoRegisterData();
         photo.setFileContents(new JAXBElement<>(FILE_CONTENTS, byte[].class, photoContents));
         photo.setSize(new JAXBElement<>(FILE_SIZE, String.class, Integer.toString(photoContents.length)));
         photo.setExtension(new JAXBElement<>(FILE_EXTENSION, String.class, EXTENSION));
@@ -94,23 +88,23 @@ public class SantanderSdkService {
         return photo;
     }
 
-    private <T> T initPort(Class<T> serviceType, String endpoint) {
-        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+    private <T> T initPort(final Class<T> serviceType, final String endpoint) {
+        final JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
         factory.setServiceClass(serviceType);
         factory.setAddress(
                 String.format(SantanderSdkSpringConfiguration.getConfiguration().sibsWebServiceAddress() + "/%s.svc", endpoint));
         factory.setBindingId("http://schemas.xmlsoap.org/wsdl/soap12/");
         factory.getFeatures().add(new WSAddressingFeature());
 
-        //Add loggers to request
+        // Add loggers to request
         factory.getInInterceptors().add(new LoggingInInterceptor());
         factory.getOutInterceptors().add(new LoggingOutInterceptor());
-        T port = (T) factory.create();
+        final T port = (T) factory.create();
 
-        /*define WSDL policy*/
-        Client client = ClientProxy.getClient(port);
-        HTTPConduit http = (HTTPConduit) client.getConduit();
-        HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+        // Define WSDL policy
+        final Client client = ClientProxy.getClient(port);
+        final HTTPConduit http = (HTTPConduit) client.getConduit();
+        final HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
 
         httpClientPolicy.setConnectionTimeout(CONNECTION_TIMEOUT); //Time in milliseconds
         httpClientPolicy.setReceiveTimeout(RECEIVE_TIMEOUT); //Time in milliseconds

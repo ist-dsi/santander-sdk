@@ -6,7 +6,7 @@ public class SantanderValidationException extends Exception {
         super();
     }
 
-    public SantanderValidationException(String msg) {
+    public SantanderValidationException(final String msg) {
         super(msg);
     }
 }

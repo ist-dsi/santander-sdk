@@ -18,7 +18,7 @@ public class CardPreviewBean {
         return requestLine;
     }
 
-    public void setRequestLine(String line) {
+    public void setRequestLine(final String line) {
         this.requestLine = line;
     }
 
@@ -26,7 +26,7 @@ public class CardPreviewBean {
         return cardName;
     }
 
-    public void setCardName(String cardName) {
+    public void setCardName(final String cardName) {
         this.cardName = cardName;
     }
 
@@ -34,7 +34,7 @@ public class CardPreviewBean {
         return this.identificationNumber;
     }
 
-    public void setIdentificationNumber(String identificationNumber) {
+    public void setIdentificationNumber(final String identificationNumber) {
         this.identificationNumber = identificationNumber;
     }
 
@@ -42,7 +42,7 @@ public class CardPreviewBean {
         return expiryDate;
     }
 
-    public void setExpiryDate(DateTime expiryDate) {
+    public void setExpiryDate(final DateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
 
@@ -50,7 +50,7 @@ public class CardPreviewBean {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(final String role) {
         this.role = role;
     }
 
@@ -58,7 +58,7 @@ public class CardPreviewBean {
         return photo;
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(final byte[] photo) {
         this.photo = photo;
     }
 

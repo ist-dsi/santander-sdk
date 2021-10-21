@@ -10,7 +10,7 @@ public class PickupAddress {
         return address1;
     }
 
-    public void setAddress1(String address1) {
+    public void setAddress1(final String address1) {
         this.address1 = address1;
     }
 
@@ -18,7 +18,7 @@ public class PickupAddress {
         return address2;
     }
 
-    public void setAddress2(String address2) {
+    public void setAddress2(final String address2) {
         this.address2 = address2;
     }
 
@@ -26,7 +26,7 @@ public class PickupAddress {
         return zipCode;
     }
 
-    public void setZipCode(String zipCode) {
+    public void setZipCode(final String zipCode) {
         this.zipCode = zipCode;
     }
 
@@ -34,7 +34,7 @@ public class PickupAddress {
         return zipDescriptive;
     }
 
-    public void setZipDescriptive(String zipDescriptive) {
+    public void setZipDescriptive(final String zipDescriptive) {
         this.zipDescriptive = zipDescriptive;
     }
 }

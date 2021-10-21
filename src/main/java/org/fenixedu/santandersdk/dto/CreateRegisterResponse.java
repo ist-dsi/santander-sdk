@@ -10,7 +10,7 @@ public class CreateRegisterResponse {
 
         public String errorMessage;
 
-        private ErrorType(String errorMessage) {
+        private ErrorType(final String errorMessage) {
             this.errorMessage = errorMessage;
         }
 
@@ -24,18 +24,16 @@ public class CreateRegisterResponse {
     private String responseLine;
     private String errorDescription;
 
-    public CreateRegisterResponse(ErrorType errorType, String responseLine, String errorDescription) {
+    public CreateRegisterResponse(final ErrorType errorType, final String responseLine, final String errorDescription) {
         setErrorType(errorType);
         setResponseLine(responseLine);
         setErrorDescription(errorDescription);
     }
 
-    public CreateRegisterResponse(TUIResponseData response) {
-        String status =
-                response.getStatus() == null || response.getStatus().getValue() == null ? "" : response.getStatus().getValue()
-                        .trim();
-
-        ErrorType errorType = !status.isEmpty() && !status.toLowerCase().equals("error") ? null : ErrorType.REQUEST_REFUSED;
+    public CreateRegisterResponse(final TUIResponseData response) {
+        final String status = response.getStatus() == null || response.getStatus().getValue() == null
+                        ? "" : response.getStatus().getValue().trim();
+        final ErrorType errorType = !status.isEmpty() && !status.equalsIgnoreCase("error") ? null : ErrorType.REQUEST_REFUSED;
 
         setErrorType(errorType);
 
@@ -59,7 +57,7 @@ public class CreateRegisterResponse {
         return errorType;
     }
 
-    public void setErrorType(ErrorType errorType) {
+    public void setErrorType(final ErrorType errorType) {
         this.errorType = errorType;
     }
 
@@ -67,7 +65,7 @@ public class CreateRegisterResponse {
         return responseLine;
     }
 
-    public void setResponseLine(String responseLine) {
+    public void setResponseLine(final String responseLine) {
         this.responseLine = responseLine;
     }
 
@@ -75,7 +73,7 @@ public class CreateRegisterResponse {
         return errorDescription;
     }
 
-    public void setErrorDescription(String errorDescription) {
+    public void setErrorDescription(final String errorDescription) {
         this.errorDescription = errorDescription;
     }
 }

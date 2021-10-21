@@ -12,11 +12,11 @@ public enum GetRegisterStatus {
 
     private final String name;
 
-    GetRegisterStatus(String name) {
+    GetRegisterStatus(final String name) {
         this.name = name;
     }
 
-    public static GetRegisterStatus fromString(String text) {
+    public static GetRegisterStatus fromString(final String text) {
         for (GetRegisterStatus b : GetRegisterStatus.values()) {
             if (b.name.equalsIgnoreCase(text)) {
                 return b;
