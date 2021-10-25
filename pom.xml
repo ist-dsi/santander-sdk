@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>santander-sdk</artifactId>
-    <version>DEV-SNAPSHOT</version>
+    <version>2.3.0</version>
     <packaging>jar</packaging>
 
     <name>Santander SDK</name>
