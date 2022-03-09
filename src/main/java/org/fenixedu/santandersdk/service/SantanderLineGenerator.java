@@ -378,6 +378,8 @@ public class SantanderLineGenerator {
         charReplacementMap.put("Ş", "S");
         charReplacementMap.put("Ä", "A");
         charReplacementMap.put("ä", "a");
+        charReplacementMap.put("Ë", "E");
+        charReplacementMap.put("ë", "e");
     }
 
 }
