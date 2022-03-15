@@ -364,6 +364,8 @@ public class SantanderLineGenerator {
         charReplacementMap.put("Ž", "Z");
         charReplacementMap.put("ů", "u");
         charReplacementMap.put("Ů", "U");
+        charReplacementMap.put("å", "a");
+        charReplacementMap.put("Å", "A");
         charReplacementMap.put("ś", "s");
         charReplacementMap.put("Ś", "S");
         charReplacementMap.put("ľ", "l");
@@ -376,10 +378,10 @@ public class SantanderLineGenerator {
         charReplacementMap.put("Ü", "U");
         charReplacementMap.put("ş", "s");
         charReplacementMap.put("Ş", "S");
-        charReplacementMap.put("Ä", "A");
         charReplacementMap.put("ä", "a");
-        charReplacementMap.put("Ë", "E");
+        charReplacementMap.put("Ä", "A");
         charReplacementMap.put("ë", "e");
+        charReplacementMap.put("Ë", "E");
     }
 
 }
