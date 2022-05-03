@@ -45,7 +45,7 @@ public class SantanderLineGenerator {
             }
             return StringNormalizer.normalizePreservingCapitalizedLetters(name);
         }
-        return name;
+        return name.trim();
     }
 
     private boolean nameContainsCharReplacements(final String name) {
@@ -331,6 +331,9 @@ public class SantanderLineGenerator {
     }
 
     private void fillCharReplacementMap() {
+        charReplacementMap.put("--", " ");
+        charReplacementMap.put("-", " ");
+        charReplacementMap.put("'", "");
         charReplacementMap.put("ł", "l");
         charReplacementMap.put("Ł", "L");
         charReplacementMap.put("Đ", "D");
