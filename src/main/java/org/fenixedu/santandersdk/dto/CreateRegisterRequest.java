@@ -1,14 +1,13 @@
 package org.fenixedu.santandersdk.dto;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 import org.imgscalr.Scalr.Mode;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class CreateRegisterRequest {
 
@@ -92,9 +91,18 @@ public class CreateRegisterRequest {
     }
 
     private byte[] transform(final BufferedImage image) {
-        final BufferedImage adjustedImage = transformZoom(image, 9, 10);
+        final BufferedImage adjustedImage = transformZoom(dropAlphaChannel(image), 9, 10);
         final BufferedImage avatar = Scalr.resize(adjustedImage, Method.QUALITY, Mode.FIT_EXACT, 180, 200);
         return writeImageAsBytes(avatar);
+    }
+
+    public static BufferedImage dropAlphaChannel(final BufferedImage src) {
+        if (src.getColorModel().hasAlpha()) {
+            BufferedImage convertedImg = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_RGB);
+            convertedImg.getGraphics().drawImage(src, 0, 0, null);
+            return convertedImg;
+        }
+        return src;
     }
 
     public String getFullName() {
